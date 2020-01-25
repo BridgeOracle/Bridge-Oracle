@@ -3,10 +3,6 @@ pragma solidity ^0.5.8;
 contract OracleAddrResolverI {
 	function getAddress() public returns(address _address);
 }
-//resolver
-
-//TBJuBAd36MWYyx2kugJ3AxS2vXuWZHxr7E deployed contract resolver
-//TA5ZdL7Bn2XsWrQmu3uBjzWrxaXMzCoSXv main contract
 
 
 
@@ -15,14 +11,14 @@ contract oracle {
 	OracleAddrResolverI OAR;
 	
 
-	string public oracle_network_name;
+	string internal oracle_network_name;
 	uint8 internal networkID_auto = 0;
 
 	modifier oracleAPI {
 		if ((address(OAR) == address(0)) || (getCodeSize(address(OAR)) == 0)) {
 			oracle_setNetwork();
 		}
-		
+
     _;
 	}
 
