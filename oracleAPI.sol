@@ -4,6 +4,7 @@ contract oracleI {
 	address public cbAddress;
 
 	function say_hi_from_connector(string memory name) public returns(string memory a);
+	function query(string calldata _datasource) external payable returns(bytes32 _id);
 }
 
 
@@ -11,10 +12,7 @@ contract OracleAddrResolverI {
 	function getAddress() public returns(address _address);
 }
 
-// resolver contract
-// original contract address : TNrcqfTa6WwryKPChfqczt523oMa7bArv9
-// converted address : 0x8d5a9f578Ce5793e4Ad29999d477eF67881f0320
-// end
+// oracleAddressResolver origin address TTuafMyqTXYpBoqD353FmhdosnGQMvJpv4
 
 contract oracle {
 
@@ -35,8 +33,8 @@ contract oracle {
 	}
 
 
-	function oracle_query(string memory _datasource, string memory _arg) oracleAPI internal returns(bytes memory _id) {
-		// calc Price Here
+	function oracle_query(string memory _datasource, string memory _arg) public payable oracleAPI returns(bytes _id) {
+		return oracle.query.value(5)(_datasource, _arg);
 	}
 
 
@@ -62,9 +60,5 @@ contract oracle {
 		assembly {
 			_size := extcodesize(_addr)
 		}
-	}
-
-	function test(string memory s) public oracleAPI {
-		oracle.say_hi_from_connector(s);
 	}
 }
