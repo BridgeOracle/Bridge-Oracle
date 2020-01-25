@@ -11,12 +11,15 @@ contract OracleAddrResolverI {
 	function getAddress() public returns(address _address);
 }
 
-
+// resolver contract
+// original contract address : TNrcqfTa6WwryKPChfqczt523oMa7bArv9
+// converted address : 0x8d5a9f578Ce5793e4Ad29999d477eF67881f0320
+// end
 
 contract oracle {
 
 	OracleAddrResolverI OAR;
-	
+	oracleI oracle;
 
 	string internal oracle_network_name;
 	uint8 internal networkID_auto = 0;
@@ -25,7 +28,9 @@ contract oracle {
 		if ((address(OAR) == address(0)) || (getCodeSize(address(OAR)) == 0)) {
 			oracle_setNetwork();
 		}
-
+		if(address(oracle) != OAR.getAddress()) {
+			oracle = oracleI(OAR.getAddress());
+		}
     _;
 	}
 
@@ -45,8 +50,8 @@ contract oracle {
     }
 
     function oracle_setNetwork() internal returns (bool _networkSet) {
-    	if (getCodeSize(0x0eB1909A04848D61EdA5115F79816455fAEeB95E) > 0) {
-            OAR = OracleAddrResolverI(0x0eB1909A04848D61EdA5115F79816455fAEeB95E);
+    	if (getCodeSize(0xC4c2ae73F8D30c696313530D43D45F071Ad0BB89) > 0) {
+            OAR = OracleAddrResolverI(0xC4c2ae73F8D30c696313530D43D45F071Ad0BB89);
             oracle_setNetworkName("trx_shasta-test");
             return true;
         }
@@ -59,4 +64,7 @@ contract oracle {
 		}
 	}
 
+	function test(string memory s) public oracleAPI {
+		oracle.say_hi_from_connector(s);
+	}
 }
