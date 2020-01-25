@@ -2,8 +2,17 @@ pragma solidity ^0.5.8;
 
 
 contract Oracle {
-
-	function say_hi_from_connector(string memory name) public returns(string memory a){
-		return name;
-	} 
+    
+    event Log1(address sender, string _datasource, string _arg);
+    
+    
+    mapping (address => uint) internal reqc;
+	
+	 function query(string calldata _datasource, string calldata _arg) external payable returns(bytes32 _id) {
+	  reqc[msg.sender]++;
+	  bytes32 customHash = keccak256('keyvan');
+	  emit Log1(msg.sender, _datasource, _arg);
+	  return customHash;
+    }
+    
 }
