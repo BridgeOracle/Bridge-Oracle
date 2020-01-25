@@ -1,5 +1,12 @@
 pragma solidity ^0.5.8;
 
+contract oracleI {
+	address public cbAddress;
+
+	function say_hi_from_connector(string memory name) external;
+}
+
+
 contract OracleAddrResolverI {
 	function getAddress() public returns(address _address);
 }
@@ -38,7 +45,7 @@ contract oracle {
     }
 
     function oracle_setNetwork() internal returns (bool _networkSet) {
-    	if (getCodeSize(0x0eB1909A04848D61EdA5115F79816455fAEeB95E) > 0) { //mainnet
+    	if (getCodeSize(0x0eB1909A04848D61EdA5115F79816455fAEeB95E) > 0) {
             OAR = OracleAddrResolverI(0x0eB1909A04848D61EdA5115F79816455fAEeB95E);
             oracle_setNetworkName("trx_shasta-test");
             return true;
