@@ -3,7 +3,7 @@ pragma solidity ^0.5.8;
 contract oracleI {
 	address public cbAddress;
 
-	function say_hi_from_connector(string memory name) external;
+	function say_hi_from_connector(string memory name) public returns(string memory a);
 }
 
 
