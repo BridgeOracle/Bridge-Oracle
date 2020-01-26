@@ -3,7 +3,7 @@ pragma solidity ^0.5.8;
 
 contract Oracle {
     
-    event Log1(address sender, string _datasource, string _arg);
+    event Log1(address sender, uint timestamp, string _datasource, string _arg, uint gaslimit);
     
     
     mapping (address => uint) internal reqc;
