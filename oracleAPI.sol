@@ -53,6 +53,7 @@ contract oracle {
             oracle_setNetworkName("trx_shasta-test");
             return true;
         }
+        return false;
     }
 
 
@@ -64,6 +65,6 @@ contract oracle {
 
 
 	function __callback(bytes32 _myid, string memory _result) public {
-		
+
 	}
 }
