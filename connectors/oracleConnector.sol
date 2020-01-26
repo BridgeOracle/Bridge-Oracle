@@ -13,6 +13,10 @@ contract Oracle {
 	 	return query1(0, _datasource, _arg, 200000);
     }
 
+    function query_withGasLimit(uint _timestamp, string memory _datasource, string memory _arg, uint _gaslimit) external payable returns(bytes32 _id) {
+    	return query1(_timestamp, _datasource, _arg, _gaslimit);
+    }
+
 
     function query1(uint _timestamp, string memory _datasource, string memory _arg, uint _gaslimit) public payable returns(bytes32 _id) {
     	reqc[msg.sender]++;
