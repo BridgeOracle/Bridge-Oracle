@@ -3,7 +3,9 @@ pragma solidity ^0.5.8;
 contract oracleI {
 	address public cbAddress;
 
-	function query(string calldata _datasource) external payable returns(bytes32 _id);
+	function query(uint _timestamp, string calldata _datasource, string calldata _arg) external payable returns(bytes32 _id);
+	function query_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg, uint _gasLimit) external payable returns(bytes32 _id);
+	function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) public payable returns(bytes32 _id);
 }
 
 
@@ -33,11 +35,19 @@ contract oracle {
 
 
 	function oracle_query(string memory _datasource, string memory _arg) public payable oracleAPI returns(bytes32 _id) {
-		return oracle.query.value(5)(_datasource, _arg);
+		return oracle.query.value(5)(0, _datasource, _arg);
 	}
 
 	function oracle_query(uint _timestamp, string memory _datasource, string memory _arg) public payable oracleAPI returns(bytes32 _id) {
 		return oracle.query.value(5)(_timestamp, _datasource, _arg);
+	}
+
+	function oracle_query(uint _timestamp, string memory _datasource, string memory _arg, uint _gasLimit) public payable oracleAPI returns(bytes32 _id) {
+		return oracle.query_withGasLimit.value(5)(_timestamp, _datasource, _arg, _gasLimit);
+	}
+
+	function oracle_query(string memory _datasource, string memory _arg1, string memory _arg2) public payable oracleAPI returns(bytes32 _id) {
+		return oracle.query2.value(5)(0, _datasource, _arg1, _arg2);
 	}
 
 
