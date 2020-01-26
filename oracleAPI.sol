@@ -61,4 +61,9 @@ contract oracle {
 			_size := extcodesize(_addr)
 		}
 	}
+
+
+	function __callback(bytes32 _myid, string memory _result) public {
+		
+	}
 }
