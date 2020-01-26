@@ -32,8 +32,12 @@ contract oracle {
 	}
 
 
-	function oracle_query(string memory _datasource, string memory _arg) public payable oracleAPI returns(bytes _id) {
+	function oracle_query(string memory _datasource, string memory _arg) public payable oracleAPI returns(bytes32 _id) {
 		return oracle.query.value(5)(_datasource, _arg);
+	}
+
+	function oracle_query(uint _timestamp, string memory _datasource, string memory _arg) public payable oracleAPI returns(bytes32 _id) {
+		return oracle.query.value(5)(_timestamp, _datasource, _arg);
 	}
 
 
