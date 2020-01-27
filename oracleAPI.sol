@@ -35,19 +35,19 @@ contract oracle {
 
 
 	function oracle_query(string memory _datasource, string memory _arg) public oracleAPI returns(bytes32 _id) {
-		return oracle.query.value(5)(0, _datasource, _arg);
+		return oracle.query.value(5000000)(0, _datasource, _arg);
 	}
 
 	function oracle_query(uint _timestamp, string memory _datasource, string memory _arg) public oracleAPI returns(bytes32 _id) {
-		return oracle.query.value(5)(_timestamp, _datasource, _arg);
+		return oracle.query.value(5000000)(_timestamp, _datasource, _arg);
 	}
 
 	function oracle_query(uint _timestamp, string memory _datasource, string memory _arg, uint _gasLimit) public oracleAPI returns(bytes32 _id) {
-		return oracle.query_withGasLimit.value(5)(_timestamp, _datasource, _arg, _gasLimit);
+		return oracle.query_withGasLimit.value(5000000)(_timestamp, _datasource, _arg, _gasLimit);
 	}
 
 	function oracle_query(string memory _datasource, string memory _arg1, string memory _arg2) public oracleAPI returns(bytes32 _id) {
-		return oracle.query2.value(5)(0, _datasource, _arg1, _arg2);
+		return oracle.query2.value(5000000)(0, _datasource, _arg1, _arg2);
 	}
 
 
