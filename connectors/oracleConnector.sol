@@ -19,6 +19,10 @@ contract Oracle {
     	_;
     }
 	
+	function withdrawFunds(address _addr) external onlyAdmin {
+		_addr.send(this.balance);
+	}
+
 	function query(string calldata _datasource, string calldata _arg) external payable returns(bytes32 _id) {
 		//set gasLimit tron blockchain
 	 	return query1(0, _datasource, _arg, 200000);
