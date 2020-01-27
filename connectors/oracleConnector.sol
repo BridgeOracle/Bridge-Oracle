@@ -13,6 +13,11 @@ contract Oracle {
     constructor() internal {
     	owner = msg.sender;
     }
+
+    modifier onlyAdmin() {
+    	require(owner == msg.sender);
+    	_;
+    }
 	
 	function query(string calldata _datasource, string calldata _arg) external payable returns(bytes32 _id) {
 		//set gasLimit tron blockchain
