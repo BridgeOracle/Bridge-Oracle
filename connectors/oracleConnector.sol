@@ -7,6 +7,12 @@ contract Oracle {
     event Log2(address sender, bytes32 cid, uint timestamp, string _datasource, string _arg1, string _arg2, uint gaslimit);
     
     mapping (address => uint) internal reqc;
+
+    address private owner;
+
+    constructor() internal {
+    	owner = msg.sender;
+    }
 	
 	function query(string calldata _datasource, string calldata _arg) external payable returns(bytes32 _id) {
 		//set gasLimit tron blockchain
@@ -24,7 +30,7 @@ contract Oracle {
     function query2(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2) external payable returns(bytes32 _id) {
     	return query2(_timestamp, _datasource, _arg1, _arg2, 200000);
     }
-    
+
     function query2_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2, uint _gasLimit) external payable returns(bytes32 _id) {
     	return query2(_timestamp, _datasource, _arg1, _arg2, _gasLimit);
     }
@@ -42,5 +48,8 @@ contract Oracle {
 	  	emit Log2(msg.sender, customHash, _timestamp, _datasource, _arg1, _arg2, _gasLimit);
 	  	return customHash;
     }
+
+
+
 
 }
