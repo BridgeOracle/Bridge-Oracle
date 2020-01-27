@@ -55,6 +55,10 @@ contract oracle {
 		return oracle.query2_withGasLimit.value(5000000)(_timestamp, _datasource, _arg1, _arg2, _gasLimit);
 	}
 
+	function oracle_query(string memory _datasource, string memory _arg1, string memory _arg2, uint _gasLimit) public oracleAPI returns(bytes32 _id) {
+		return oracle.query2_withGasLimit.value(5000000)(0, _datasource, _arg1, _arg2, _gasLimit);
+	}
+
 
 	function oracle_setNetwork(uint8 _networkID) internal returns (bool _networkSet) {
       _networkID;
