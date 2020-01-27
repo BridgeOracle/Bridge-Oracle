@@ -6,6 +6,7 @@ contract oracleI {
 	function query(uint _timestamp, string calldata _datasource, string calldata _arg) external payable returns(bytes32 _id);
 	function query_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg, uint _gasLimit) external payable returns(bytes32 _id);
 	function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) public payable returns(bytes32 _id);
+	function query2_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2, uint _gasLimit) external payable returns(bytes32 _id);
 }
 
 
@@ -48,6 +49,10 @@ contract oracle {
 
 	function oracle_query(string memory _datasource, string memory _arg1, string memory _arg2) public oracleAPI returns(bytes32 _id) {
 		return oracle.query2.value(5000000)(0, _datasource, _arg1, _arg2);
+	}
+
+	function oracle_query(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _gasLimit) public oracleAPI returns(bytes32 _id) {
+		return oracle.query2_withGasLimit.value(5000000)(_timestamp, _datasource, _arg1, _arg2, _gasLimit);
 	}
 
 
