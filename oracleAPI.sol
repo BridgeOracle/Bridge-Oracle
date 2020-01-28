@@ -8,6 +8,7 @@ contract oracleI {
 	function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) public payable returns(bytes32 _id);
 	function query2_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2, uint _gasLimit) external payable returns(bytes32 _id);
 	function setProofType(byte _proofType) external;
+	function setCustomGasPrice(uint _gasPrice) external;
 }
 
 
@@ -46,6 +47,9 @@ contract oracle {
 		return oracle.setProofType(_proofP);
 	}
 
+	function oracle_setCustomGasPrice(uint _gasPrice) internal oracleAPI {
+		return oracle.setCustomGasPrice(_gasPrice);
+	}
 
 	function oracle_query(string memory _datasource, string memory _arg) public oracleAPI returns(bytes32 _id) {
 		return oracle.query.value(5000000)(0, _datasource, _arg);
