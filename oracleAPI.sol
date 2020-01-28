@@ -7,6 +7,7 @@ contract oracleI {
 	function query_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg, uint _gasLimit) external payable returns(bytes32 _id);
 	function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) public payable returns(bytes32 _id);
 	function query2_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2, uint _gasLimit) external payable returns(bytes32 _id);
+	function setProofType(byte _proofType) external;
 }
 
 
@@ -24,6 +25,13 @@ contract oracle {
 	string internal oracle_network_name;
 	uint8 internal networkID_auto = 0;
 
+	byte constant proofType_NONE = 0x00;
+    byte constant proofType_Ledger = 0x30;
+    byte constant proofType_Native = 0xF0;
+    byte constant proofStorage_IPFS = 0x01;
+    byte constant proofType_Android = 0x40;
+    byte constant proofType_TLSNotary = 0x10;
+
 	modifier oracleAPI {
 		if ((address(OAR) == address(0)) || (getCodeSize(address(OAR)) == 0)) {
 			oracle_setNetwork();
@@ -32,6 +40,10 @@ contract oracle {
 			oracle = oracleI(OAR.getAddress());
 		}
     _;
+	}
+
+	function oracle_setProof(byte _proofP) internal oracleAPI {
+		return oracle.setProofType(_proofP);
 	}
 
 
