@@ -27,8 +27,11 @@ contract Oracle {
     }
 
     function setBasePrice(uint new_baseprice) external onlyAdmin {
-    
-        
+        basePrice = new_baseprice;
+    }
+
+    function setBasePrice(uint new_baseprice, bytes proofID) external onlyAdmin {
+        basePrice = new_baseprice;
     }
 
     function getPrice(string memory _datasource) public returns(uint _dsPrice) {
