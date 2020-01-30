@@ -76,6 +76,15 @@ contract oracle {
 	}
 
 
+	function oracle_getPrice(string memory _datasource) internal oracleAPI returns(uint _queryPrice) {
+		return oracle.getPrice(_datasource);
+	}
+
+	function oracle_getPrice(string memory _datasource, uint _gasLimit) internal oracleAPI returns(uint _queryPrice) {
+		return oracle.getPrice(_datasource, _gasLimit);
+	}
+
+
 	function oracle_setNetwork(uint8 _networkID) internal returns (bool _networkSet) {
       _networkID;
       return oracle_setNetwork();
@@ -108,6 +117,7 @@ contract oracle {
 
 
 	function __callback(bytes32 _myid, string memory _result) public {
-
+		__callback(_myid, _result, new bytes(0));
 	}
+
 }
