@@ -31,19 +31,19 @@ contract Oracle {
         
     }
 
-    function getPrice(string _datasource) public returns(uint _dsPrice) {
+    function getPrice(string memory _datasource) public returns(uint _dsPrice) {
         return getPrice(_datasource, msg.sender);
     }
 
-    function getPrice(string _datasource, uint _gasLimit) public returns(uint _dsprice) {
+    function getPrice(string memory _datasource, uint _gasLimit) public returns(uint _dsprice) {
         return getPrice(_datasource, _gasLimit, msg.sender);
     }
 
-    function getPrice(string _datasource, address _addr) private returns(uint _dsprice) {
+    function getPrice(string memory _datasource, address _addr) private returns(uint _dsprice) {
         return getPrice(_datasource, 200000, _addr);
     }
 
-    function getPrice(string _datasource, uint _gasLimit, address _addr) private returns(uint _dsprice) {
+    function getPrice(string memory _datasource, uint _gasLimit, address _addr) private returns(uint _dsprice) {
         
     }
 
