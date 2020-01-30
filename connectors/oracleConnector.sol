@@ -88,6 +88,7 @@ contract Oracle {
     }
 
     function query1(uint _timestamp, string memory _datasource, string memory _arg, uint _gaslimit) public payable returns(bytes32 _id) {
+        costs(_datasource, _gaslimit);
     	reqc[msg.sender]++;
 	  	bytes32 customHash = keccak256('keyvan');
 	  	emit Log1(msg.sender, customHash, _timestamp, _datasource, _arg, _gaslimit, addr_proofType[msg.sender], addr_gasPrice[msg.sender]);
@@ -95,7 +96,8 @@ contract Oracle {
     }
 
     function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _gasLimit) public payable returns(bytes32 _id) {
-    	reqc[msg.sender]++;
+    	costs(_datasource, _gaslimit);
+        reqc[msg.sender]++;
 	  	bytes32 customHash = keccak256('keyvan');
 	  	emit Log2(msg.sender, customHash, _timestamp, _datasource, _arg1, _arg2, _gasLimit, addr_proofType[msg.sender], addr_gasPrice[msg.sender]);
 	  	return customHash;
