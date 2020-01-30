@@ -10,6 +10,7 @@ contract oracleI {
 	function setProofType(byte _proofType) external;
 	function setCustomGasPrice(uint _gasPrice) external;
 	function getPrice(string memory _datasource) public returns(uint _dsprice);
+	function getPrice(string memory _datasource, uint _gasLimit) public returns(uint _dsprice);
 }
 
 
