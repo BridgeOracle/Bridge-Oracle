@@ -119,7 +119,7 @@ contract oracle {
 
 
 	function __callback(bytes32 _myid, string memory _result) public {
-		__callback(_myid, _result, new bytes(0));
+		
 	}
 
 }
