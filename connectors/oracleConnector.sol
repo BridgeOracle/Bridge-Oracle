@@ -41,6 +41,10 @@ contract Oracle {
         
     }
 
+    function costs(string memory datasource, uint gaslimit) private returns(uint price) {
+        price = getPrice(datasource, gaslimit, msg.sender);
+    }
+
     function setProofType(byte _proofType) external {
     	addr_proofType[msg.sender] = _proofType;
     }
