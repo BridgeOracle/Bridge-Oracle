@@ -10,7 +10,8 @@ contract Oracle {
     mapping(address => uint) internal addr_gasPrice;
 
     mapping(address => uint) internal reqc;
-
+    
+    uint public basePrice;
 
 
     address private owner;
@@ -23,6 +24,11 @@ contract Oracle {
     modifier onlyAdmin() {
     	require(owner == msg.sender);
     	_;
+    }
+
+    function setBasePrice(uint new_baseprice) external onlyAdmin {
+    
+        
     }
 
     function getPrice(string _datasource) public returns(uint _dsPrice) {
