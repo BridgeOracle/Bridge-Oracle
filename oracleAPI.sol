@@ -267,7 +267,7 @@ contract oracle {
         return mint;
     }
 
-	function uint2str(uint _i) public pure returns (string memory _uintAsString) {
+	function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
             return "0";
         }
