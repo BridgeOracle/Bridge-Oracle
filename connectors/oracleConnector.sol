@@ -30,7 +30,7 @@ contract Oracle {
         basePrice = new_baseprice;
     }
 
-    function setBasePrice(uint new_baseprice, bytes proofID) external onlyAdmin {
+    function setBasePrice(uint new_baseprice, bytes calldata proofID) external onlyAdmin {
         basePrice = new_baseprice;
     }
 
@@ -89,20 +89,34 @@ contract Oracle {
 
     function query1(uint _timestamp, string memory _datasource, string memory _arg, uint _gaslimit) public payable returns(bytes32 _id) {
         costs(_datasource, _gaslimit);
+        bytes memory cl = bytes(abi.encodePacked(msg.sender));
+        bytes memory co = bytes(abi.encodePacked(this));
+        bytes memory n = toBytes(reqc[msg.sender]);
+        bytes memory concat = abi.encodePacked(co, cl, n);
+        _id = sha256(concat);
     	reqc[msg.sender]++;
-	  	bytes32 customHash = keccak256('keyvan');
-	  	emit Log1(msg.sender, customHash, _timestamp, _datasource, _arg, _gaslimit, addr_proofType[msg.sender], addr_gasPrice[msg.sender]);
-	  	return customHash;
+	  	emit Log1(msg.sender, _id, _timestamp, _datasource, _arg, _gaslimit, addr_proofType[msg.sender], addr_gasPrice[msg.sender]);
+	  	return _id;
     }
 
-    function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _gasLimit) public payable returns(bytes32 _id) {
+    function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _gaslimit) public payable returns(bytes32 _id) {
     	costs(_datasource, _gaslimit);
+        bytes memory cl = bytes(abi.encodePacked(msg.sender));
+        bytes memory co = bytes(abi.encodePacked(this));
+        bytes memory n = toBytes(reqc[msg.sender]);
+        bytes memory concat = abi.encodePacked(co, cl, n);
+        _id = sha256(concat);
         reqc[msg.sender]++;
-	  	bytes32 customHash = keccak256('keyvan');
-	  	emit Log2(msg.sender, customHash, _timestamp, _datasource, _arg1, _arg2, _gasLimit, addr_proofType[msg.sender], addr_gasPrice[msg.sender]);
-	  	return customHash;
+	  	emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _gaslimit, addr_proofType[msg.sender], addr_gasPrice[msg.sender]);
+	  	return _id;
     }
 
+    function toBytes(uint256 x) public returns (bytes memory b) {
+        b = new bytes(32);
+        assembly {
+        mstore(add(b, 32), x) 
+    }
+}
 
 
 
