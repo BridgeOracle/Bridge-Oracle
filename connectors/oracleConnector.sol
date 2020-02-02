@@ -38,9 +38,19 @@ contract Oracle {
     function removeCbAddress(address newCbAddress) external onlyAdmin {
         delete cbAddresses[newCbAddress];
     }
+
+    function addDSource(string calldata dsname, uint multiplier) external
+    {
+        addDSource(dsname, 0x00, multiplier);
+    }
+
+    function addDSource(string memory dsname, byte proofType, uint multiplier) public onlyAdmin
+    {
+        
+    }
     
     function cbAddress() internal view returns(address _cbAddress) {
-        if(cbAddresses[tx.origin] != )
+        if(cbAddresses[tx.origin] != 0)
             _cbAddress = tx.origin;
     }
 
