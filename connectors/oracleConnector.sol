@@ -38,6 +38,11 @@ contract Oracle {
     function removeCbAddress(address newCbAddress) external onlyAdmin {
         delete cbAddresses[newCbAddress];
     }
+    
+    function cbAddress() internal view returns(address _cbAddress) {
+        if(cbAddresses[tx.origin] != )
+            _cbAddress = tx.origin;
+    }
 
     function setBasePrice(uint new_baseprice) external onlyAdmin {
         basePrice = new_baseprice;
