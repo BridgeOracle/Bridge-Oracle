@@ -31,7 +31,7 @@ contract Oracle {
         addCbAddress(newCbAddress, addressType, hex'');
     }
     
-    function addCbAddress(address newCbAddress, byte addressType, bytes proof) public onlyAdmin{
+    function addCbAddress(address newCbAddress, byte addressType, bytes memory proof) public onlyAdmin{
         cbAddresses[newCbAddress] = addressType;
     }
 
