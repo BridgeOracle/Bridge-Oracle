@@ -10,7 +10,8 @@ contract Oracle {
     mapping(address => uint) internal addr_gasPrice;
 
     mapping(address => uint) internal reqc;
-    
+
+    mapping(address => byte) public cbAddresses;    
     uint public basePrice;
 
 
@@ -24,6 +25,14 @@ contract Oracle {
     modifier onlyAdmin() {
     	require(owner == msg.sender);
     	_;
+    }
+
+    function addCbAddress(address newCbAddress, byte addressType) external onlyAdmin{
+        addCbAddress(newCbAddress, addressType, hex'');
+    }
+    
+    function addCbAddress(address newCbAddress, byte addressType, bytes proof) public onlyAdmin{
+        cbAddresses[newCbAddress] = addressType;
     }
 
     function setBasePrice(uint new_baseprice) external onlyAdmin {
