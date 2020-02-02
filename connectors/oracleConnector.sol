@@ -35,6 +35,10 @@ contract Oracle {
         cbAddresses[newCbAddress] = addressType;
     }
 
+    function removeCbAddress(address newCbAddress) external onlyAdmin {
+        delete cbAddresses[newCbAddress];
+    }
+
     function setBasePrice(uint new_baseprice) external onlyAdmin {
         basePrice = new_baseprice;
     }
