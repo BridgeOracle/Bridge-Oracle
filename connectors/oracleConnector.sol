@@ -26,15 +26,15 @@ contract Oracle {
     	require(owner == msg.sender);
     	_;
     }
-
-<<<<<<< HEAD
+    
     function setMaxBandWidthPrice(uint256 new_maxBandWidthPrice) external onlyAdmin {
         maxBandWidthPrice = new_maxBandWidthPrice;
     }
 
     function setDefaultFeeLimit(uint256 new_defaultFeeLimit) external onlyAdmin {
         defaultFeeLimit = new_defaultFeeLimit;
-=======
+    }
+
     function addCbAddress(address newCbAddress, byte addressType) external onlyAdmin{
         addCbAddress(newCbAddress, addressType, hex'');
     }
@@ -60,7 +60,6 @@ contract Oracle {
     function cbAddress() internal view returns(address _cbAddress) {
         if(cbAddresses[tx.origin] != 0)
             _cbAddress = tx.origin;
->>>>>>> 3a3056af53ef2d338ba961f588794baa51281531
     }
 
     function setBasePrice(uint new_baseprice) external onlyAdmin {
