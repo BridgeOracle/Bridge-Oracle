@@ -9,7 +9,8 @@ contract Oracle {
     mapping(address => byte) internal addr_proofType;
 
     mapping(address => uint) internal reqc;
-    
+
+    mapping(address => byte) public cbAddresses;    
     uint public basePrice;
     uint256 public maxBandWidthPrice;
     uint256 public defaultFeeLimit;
@@ -26,12 +27,40 @@ contract Oracle {
     	_;
     }
 
+<<<<<<< HEAD
     function setMaxBandWidthPrice(uint256 new_maxBandWidthPrice) external onlyAdmin {
         maxBandWidthPrice = new_maxBandWidthPrice;
     }
 
     function setDefaultFeeLimit(uint256 new_defaultFeeLimit) external onlyAdmin {
         defaultFeeLimit = new_defaultFeeLimit;
+=======
+    function addCbAddress(address newCbAddress, byte addressType) external onlyAdmin{
+        addCbAddress(newCbAddress, addressType, hex'');
+    }
+    
+    function addCbAddress(address newCbAddress, byte addressType, bytes memory proof) public onlyAdmin{
+        cbAddresses[newCbAddress] = addressType;
+    }
+
+    function removeCbAddress(address newCbAddress) external onlyAdmin {
+        delete cbAddresses[newCbAddress];
+    }
+
+    function addDSource(string calldata dsname, uint multiplier) external
+    {
+        addDSource(dsname, 0x00, multiplier);
+    }
+
+    function addDSource(string memory dsname, byte proofType, uint multiplier) public onlyAdmin
+    {
+        
+    }
+    
+    function cbAddress() internal view returns(address _cbAddress) {
+        if(cbAddresses[tx.origin] != 0)
+            _cbAddress = tx.origin;
+>>>>>>> 3a3056af53ef2d338ba961f588794baa51281531
     }
 
     function setBasePrice(uint new_baseprice) external onlyAdmin {

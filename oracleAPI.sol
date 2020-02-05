@@ -122,6 +122,10 @@ contract oracle {
 		
 	}
 
+    function oracle_cbAddress() internal oracleAPI returns(address _callbackAddress) {
+        return oracle.cbAddress();
+    }
+
 	function strCompare(string memory _a, string memory _b) internal pure returns (int _returnCode) {
         bytes memory a = bytes(_a);
         bytes memory b = bytes(_b);
