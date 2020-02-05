@@ -4,7 +4,7 @@ pragma solidity ^0.5.8;
 contract Oracle {
     
     event Log1(address sender, bytes32 cid, uint timestamp, string _datasource, string _arg, uint feelimit, byte proofType);
-    event Log2(address sender, bytes32 cid, uint timestamp, string _datasource, string _arg1, string _arg2, uint gaslimit, byte proofType, uint gasPrice);
+    event Log2(address sender, bytes32 cid, uint timestamp, string _datasource, string _arg1, string _arg2, uint feelimit, byte proofType);
     
     mapping(address => byte) internal addr_proofType;
     mapping(address => uint) internal addr_gasPrice;
