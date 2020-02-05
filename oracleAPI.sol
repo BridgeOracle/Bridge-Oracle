@@ -8,7 +8,6 @@ contract oracleI {
 	function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) public payable returns(bytes32 _id);
 	function query2_withFeeLimit(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2, uint _feeLimit) external payable returns(bytes32 _id);
 	function setProofType(byte _proofType) external;
-	function setCustomGasPrice(uint _gasPrice) external;
 	function getPrice(string memory _datasource) public returns(uint _dsprice);
 	function getPrice(string memory _datasource, uint _gasLimit) public returns(uint _dsprice);
 }
