@@ -51,7 +51,10 @@ contract Oracle {
     }
 
     function getPrice(string memory _datasource, uint _feeLimit, address _addr) private returns(uint _dsprice) {
-        
+        require(_feelimit <= 1000000000);
+        _dsprice = price[sha256(_datasource, add_proofType[_addr])];
+        _dsprice += maxBandWidthPrice + _feeLimit;
+        return _dsprice;
     }
 
     function costs(string memory datasource, uint gaslimit) private returns(uint price) {
