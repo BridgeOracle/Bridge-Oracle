@@ -48,10 +48,6 @@ contract oracle {
 		return oracle.setProofType(_proofP);
 	}
 
-	function oracle_setCustomGasPrice(uint _gasPrice) internal oracleAPI {
-		return oracle.setCustomGasPrice(_gasPrice);
-	}
-
 	function oracle_query(string memory _datasource, string memory _arg) public oracleAPI returns(bytes32 _id) {
 		return oracle.query.value(5000000)(0, _datasource, _arg);
 	}
