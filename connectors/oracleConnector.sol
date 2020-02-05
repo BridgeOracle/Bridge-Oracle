@@ -74,8 +74,8 @@ contract Oracle {
 	}
 
 	function query(string calldata _datasource, string calldata _arg) external payable returns(bytes32 _id) {
-		//set gasLimit tron blockchain
-	 	return query1(0, _datasource, _arg, 200000);
+		//set feeLimit tron blockchain
+	 	return query1(0, _datasource, _arg, defaultFeeLimit);
     }
 
     function query(uint _timestamp, string calldata _datasource, string calldata _arg) payable external returns(bytes32 _id) {
