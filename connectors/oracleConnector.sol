@@ -41,8 +41,8 @@ contract Oracle {
         return getPrice(_datasource, msg.sender);
     }
 
-    function getPrice(string memory _datasource, uint _gasLimit) public returns(uint _dsprice) {
-        return getPrice(_datasource, _gasLimit, msg.sender);
+    function getPrice(string memory _datasource, uint _feeLimit) public returns(uint _dsprice) {
+        return getPrice(_datasource, _feeLimit, msg.sender);
     }
 
     function getPrice(string memory _datasource, address _addr) private returns(uint _dsprice) {
