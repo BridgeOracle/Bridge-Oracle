@@ -12,6 +12,7 @@ contract Oracle {
     
     uint public basePrice;
     uint256 public maxBandWidthPrice;
+    uint256 public defaultFeeLimit;
 
     address private owner;
 
@@ -46,7 +47,7 @@ contract Oracle {
     }
 
     function getPrice(string memory _datasource, address _addr) private returns(uint _dsprice) {
-        return getPrice(_datasource, 200000, _addr);
+        return getPrice(_datasource, defaultFeeLimit, _addr);
     }
 
     function getPrice(string memory _datasource, uint _feeLimit, address _addr) private returns(uint _dsprice) {
