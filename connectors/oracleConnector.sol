@@ -82,8 +82,8 @@ contract Oracle {
     	return query1(_timestamp, _datasource, _arg, defaultFeeLimit);
     }
 
-    function query_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg, uint _gaslimit) external payable returns(bytes32 _id) {
-    	return query1(_timestamp, _datasource, _arg, _gaslimit);
+    function query_withFeeLimit(uint _timestamp, string calldata _datasource, string calldata _arg, uint _feelimit) external payable returns(bytes32 _id) {
+    	return query1(_timestamp, _datasource, _arg, _feelimit);
     }
 
     function query2(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2) external payable returns(bytes32 _id) {
