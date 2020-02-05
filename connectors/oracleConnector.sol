@@ -26,6 +26,10 @@ contract Oracle {
     	_;
     }
 
+    function setMaxBandWidthPrice(uint256 new_maxBandWidthPrice) external onlyAdmin {
+        maxBandWidthPrice = new_maxBandWidthPrice
+    }
+
     function setBasePrice(uint new_baseprice) external onlyAdmin {
         basePrice = new_baseprice;
     }
@@ -61,7 +65,7 @@ contract Oracle {
     function setCustomGasPrice(uint _gasPrice) external {
     	addr_gasPrice[msg.sender] = _gasPrice;
     }
-    
+
 	function withdrawFunds(address _addr) external onlyAdmin {
 		_addr.send(this.balance);
 	}
