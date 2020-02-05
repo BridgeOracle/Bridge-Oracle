@@ -106,15 +106,15 @@ contract Oracle {
 	  	return _id;
     }
 
-    function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _gaslimit) public payable returns(bytes32 _id) {
-    	costs(_datasource, _gaslimit);
+    function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _feeLimit) public payable returns(bytes32 _id) {
+    	costs(_datasource, _feeLimit);
         bytes memory cl = bytes(abi.encodePacked(msg.sender));
         bytes memory co = bytes(abi.encodePacked(this));
         bytes memory n = toBytes(reqc[msg.sender]);
         bytes memory concat = abi.encodePacked(co, cl, n);
         _id = sha256(concat);
         reqc[msg.sender]++;
-	  	emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _gaslimit, addr_proofType[msg.sender], addr_gasPrice[msg.sender]);
+	  	emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _feeLimit, addr_proofType[msg.sender]);
 	  	return _id;
     }
 
