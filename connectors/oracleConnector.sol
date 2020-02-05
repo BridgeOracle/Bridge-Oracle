@@ -12,7 +12,7 @@ contract Oracle {
     mapping(address => uint) internal reqc;
     
     uint public basePrice;
-
+    uint256 public maxBandWidthPrice;
 
     address private owner;
 
@@ -46,7 +46,7 @@ contract Oracle {
         return getPrice(_datasource, 200000, _addr);
     }
 
-    function getPrice(string memory _datasource, uint _gasLimit, address _addr) private returns(uint _dsprice) {
+    function getPrice(string memory _datasource, uint _feeLimit, address _addr) private returns(uint _dsprice) {
         
     }
 
@@ -61,7 +61,7 @@ contract Oracle {
     function setCustomGasPrice(uint _gasPrice) external {
     	addr_gasPrice[msg.sender] = _gasPrice;
     }
-	
+    
 	function withdrawFunds(address _addr) external onlyAdmin {
 		_addr.send(this.balance);
 	}
