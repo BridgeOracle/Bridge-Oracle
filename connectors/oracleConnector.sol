@@ -27,7 +27,11 @@ contract Oracle {
     }
 
     function setMaxBandWidthPrice(uint256 new_maxBandWidthPrice) external onlyAdmin {
-        maxBandWidthPrice = new_maxBandWidthPrice
+        maxBandWidthPrice = new_maxBandWidthPrice;
+    }
+
+    function setDefaultFeeLimit(uint256 new_defaultFeeLimit) external onlyAdmin {
+        defaultFeeLimit = new_defaultFeeLimit;
     }
 
     function setBasePrice(uint new_baseprice) external onlyAdmin {
