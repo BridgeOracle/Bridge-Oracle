@@ -61,8 +61,8 @@ contract Oracle {
         return _dsprice;
     }
 
-    function costs(string memory datasource, uint gaslimit) private returns(uint price) {
-        price = getPrice(datasource, gaslimit, msg.sender);
+    function costs(string memory datasource, uint feelimit) private returns(uint price) {
+        price = getPrice(datasource, feelimit, msg.sender);
     }
 
     function setProofType(byte _proofType) external {
