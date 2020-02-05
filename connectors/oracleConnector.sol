@@ -26,7 +26,7 @@ contract Oracle {
     	require(owner == msg.sender);
     	_;
     }
-    
+
     function setMaxBandWidthPrice(uint256 new_maxBandWidthPrice) external onlyAdmin {
         maxBandWidthPrice = new_maxBandWidthPrice;
     }
@@ -91,6 +91,15 @@ contract Oracle {
 
     function costs(string memory datasource, uint feelimit) private returns(uint price) {
         price = getPrice(datasource, feelimit, msg.sender);
+
+        if (msg.value >= price) {
+            uint diff = msg.value - price;
+            if (diff > 0) {
+                if (!msg.sender.transfer(diff)) {
+                    revert();
+                }
+            }
+        } else revert();
     }
 
     function setProofType(byte _proofType) external {
