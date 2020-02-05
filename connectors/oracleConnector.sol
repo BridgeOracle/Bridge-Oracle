@@ -69,10 +69,6 @@ contract Oracle {
     	addr_proofType[msg.sender] = _proofType;
     }
 
-    function setCustomGasPrice(uint _gasPrice) external {
-    	addr_gasPrice[msg.sender] = _gasPrice;
-    }
-
 	function withdrawFunds(address _addr) external onlyAdmin {
 		_addr.send(this.balance);
 	}
