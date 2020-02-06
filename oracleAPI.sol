@@ -121,8 +121,8 @@ contract oracle {
 		return oracle.getPrice(_datasource);
 	}
 
-	function oracle_getPrice(string memory _datasource, uint _gasLimit) internal oracleAPI returns(uint _queryPrice) {
-		return oracle.getPrice(_datasource, _gasLimit);
+	function oracle_getPrice(string memory _datasource, uint _feeLimit) internal oracleAPI returns(uint _queryPrice) {
+		return oracle.getPrice(_datasource, _feeLimit);
 	}
 
 
