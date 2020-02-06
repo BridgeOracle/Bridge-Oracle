@@ -49,27 +49,71 @@ contract oracle {
 	}
 
 	function oracle_query(string memory _datasource, string memory _arg) public oracleAPI returns(bytes32 _id) {
-		return oracle.query.value(5000000)(0, _datasource, _arg);
+		uint256 price = oracle.getPrice(_datasource);
+        uint256 feeLimit = 1000 TRX;
+        if (price > 1000 TRX + feeLimit) {
+            return 0; // Unexpectedly high price
+        }
+        return oracle.query.value(price)(0, _datasource, _arg);
 	}
 
 	function oracle_query(uint _timestamp, string memory _datasource, string memory _arg) public oracleAPI returns(bytes32 _id) {
-		return oracle.query.value(5000000)(_timestamp, _datasource, _arg);
+		uint256 price = oracle.getPrice(_datasource);
+        uint256 feeLimit = 1000 TRX;
+        if (price > 1000 TRX + feeLimit) {
+            return 0; // Unexpectedly high price
+        }
+        return oracle.query.value(price)(_timestamp, _datasource, _arg);
 	}
 
-	function oracle_query(uint _timestamp, string memory _datasource, string memory _arg, uint _gasLimit) public oracleAPI returns(bytes32 _id) {
-		return oracle.query_withGasLimit.value(5000000)(_timestamp, _datasource, _arg, _gasLimit);
+	function oracle_query(uint _timestamp, string memory _datasource, string memory _arg, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+		uint256 price = oracle.getPrice(_datasource, _feeLimit);
+        if (price > 1000 TRX + _feeLimit) {
+            return 0; // Unexpectedly high price
+        }
+        return oracle.query_withFeeLimit.value(price)(_timestamp, _datasource, _arg, _feeLimit);
 	}
+
+    function provable_query(string memory _datasource, string memory _arg, uint _feeLimit) provableAPI internal returns (bytes32 _id) {
+        uint price = provable.getPrice(_datasource, _feeLimit);
+        if (price > 1000 TRX + _feeLimit) {
+           return 0; // Unexpectedly high price
+        }
+        return provable.query_withFeeLimit.value(price)(0, _datasource, _arg, _feeLimit);
+    }
 
 	function oracle_query(string memory _datasource, string memory _arg1, string memory _arg2) public oracleAPI returns(bytes32 _id) {
-		return oracle.query2.value(5000000)(0, _datasource, _arg1, _arg2);
+		uint256 price = oracle.getPrice(_datasource);
+        uint256 feeLimit = 1000 TRX;
+        if (price > 1000 TRX + feeLimit) {
+            return 0; // Unexpectedly high price
+        }
+        return oracle.query2.value(price)(0, _datasource, _arg1, _arg2);
 	}
 
-	function oracle_query(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _gasLimit) public oracleAPI returns(bytes32 _id) {
-		return oracle.query2_withGasLimit.value(5000000)(_timestamp, _datasource, _arg1, _arg2, _gasLimit);
+    function oracle_query(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) public oracleAPI returns(bytes32 _id) {
+		uint256 price = oracle.getPrice(_datasource);
+        uint256 feeLimit = 1000 TRX;
+        if (price > 1000 TRX + feeLimit) {
+            return 0; // Unexpectedly high price
+        }
+        return oracle.query2.value(price)(_timestamp, _datasource, _arg1, _arg2);
 	}
 
-	function oracle_query(string memory _datasource, string memory _arg1, string memory _arg2, uint _gasLimit) public oracleAPI returns(bytes32 _id) {
-		return oracle.query2_withGasLimit.value(5000000)(0, _datasource, _arg1, _arg2, _gasLimit);
+	function oracle_query(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+		uint256 price = oracle.getPrice(_datasource, _feeLimit);
+        if (price > 1000 TRX + feeLimit) {
+            return 0; // Unexpectedly high price
+        }
+        return oracle.query2_withFeeLimit.value(price)(_timestamp, _datasource, _arg1, _arg2, _feeLimit);
+	}
+
+	function oracle_query(string memory _datasource, string memory _arg1, string memory _arg2, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+		uint256 price = oracle.getPrice(_datasource, _feeLimit);
+        if (price > 1000 TRX + feeLimit) {
+            return 0; // Unexpectedly high price
+        }
+        return oracle.query2_withFeeLimit.value(price)(0, _datasource, _arg1, _arg2, _feeLimit);
 	}
 
 
