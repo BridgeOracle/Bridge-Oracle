@@ -5,7 +5,8 @@ contract Oracle {
     
     event Log1(address sender, bytes32 cid, uint timestamp, string _datasource, string _arg, uint feelimit, byte proofType);
     event Log2(address sender, bytes32 cid, uint timestamp, string _datasource, string _arg1, string _arg2, uint feelimit, byte proofType);
-    
+    event logN(address sender, bytes32 cid, uint timestamp, string _datasource, bytes args, uint feelimit, byte proofType);
+
     mapping(address => byte) internal addr_proofType;
 
     mapping(address => uint) internal reqc;
@@ -14,6 +15,7 @@ contract Oracle {
     uint public basePrice;
     uint256 public maxBandWidthPrice;
     uint256 public defaultFeeLimit;
+
 
     address private owner;
 
@@ -131,6 +133,14 @@ contract Oracle {
     	return query2(_timestamp, _datasource, _arg1, _arg2, _feeLimit);
     }
 
+    function queryN(string memory _datasource, bytes _args) external payable returns(bytes32 _id) {
+        return queryN(0, _datasource, _args, defaultFeeLimit);
+    }
+    
+    function queryN(uint _timestamp, string memory _datasource, bytes _args) external payable returns(bytes32 _id) {
+        return queryN(_timestamp, _datasource, _args, defaultFeeLimit);
+    }
+
     function query1(uint _timestamp, string memory _datasource, string memory _arg, uint _feeLimit) public payable returns(bytes32 _id) {
         costs(_datasource, _feeLimit);
         bytes memory cl = bytes(abi.encodePacked(msg.sender));
@@ -154,6 +164,20 @@ contract Oracle {
 	  	emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _feeLimit, addr_proofType[msg.sender]);
 	  	return _id;
     }
+
+    function queryN(uint _timestamp, string memory _datasource, bytes _args, uint _feelimit) public payable returns(bytes32 _id) {
+        costs(_datasource, _feeLimit);
+        bytes memory cl = bytes(abi.encodePacked(msg.sender));
+        bytes memory co = bytes(abi.encodePacked(this));
+        bytes memory n = toBytes(reqc[msg.sender]);
+        bytes memory concat = abi.encodePacked(co, cl, n);
+        _id = sha256(concat);
+        reqc[msg.sender]++;
+        emit logN(msg.sender, _id, _timestamp, _datasource, _args, _feelimit, addr_proofType[msg.sender]);
+        return _id;
+    }
+
+    
 
     function toBytes(uint256 x) public returns (bytes memory b) {
         b = new bytes(32);
