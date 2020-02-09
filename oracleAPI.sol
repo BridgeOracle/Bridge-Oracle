@@ -7,6 +7,7 @@ contract oracleI {
 	function query_withFeeLimit(uint _timestamp, string calldata _datasource, string calldata _arg, uint _feeLimit) external payable returns(bytes32 _id);
 	function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) public payable returns(bytes32 _id);
 	function query2_withFeeLimit(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2, uint _feeLimit) external payable returns(bytes32 _id);
+    function queryN(uint _timestamp, string memory _datasource, bytes memory _argN) public payable returns(bytes32 _id);
 	function setProofType(byte _proofType) external;
 	function getPrice(string memory _datasource) public returns(uint _dsprice);
 	function getPrice(string memory _datasource, uint _feeLimit) public returns(uint _dsprice);
@@ -115,6 +116,15 @@ contract oracle {
         }
         return oracle.query2_withFeeLimit.value(price)(0, _datasource, _arg1, _arg2, _feeLimit);
 	}
+
+    function oracle_query(string memory _datasource, string[] memory _argN) public oracleAPI returns(bytes32 _id) {
+        uint256 price = oracle.getPrice(_datasource);
+        if(price > 1000 trx + feeLimit) {
+            return 0;
+        }
+        bytes memory args = stra2cbor(_argN);
+        return oracle.queryN.value(price)(0, _datasource, args);
+    } 
 
 
 	function oracle_getPrice(string memory _datasource) internal oracleAPI returns(uint _queryPrice) {
