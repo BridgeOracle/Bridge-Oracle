@@ -339,6 +339,10 @@ contract oracle {
         return string(bstr);
     }
 
+    function stra2cbor(string[] memory _arr) internal pure returns(bytes memory _cborEncoding) {
+        safeMemoryCleaner();
+    }
+    
     function safeMemoryCleaner() internal pure {
         assembly {
             let fmem := mload(0x40)
