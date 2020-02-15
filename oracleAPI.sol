@@ -154,6 +154,15 @@ contract oracle {
         return oracle.queryN_withGasLimit.value(price)(0, _datasource, args, _feeLimit);
     }
 
+    function oracle_query(string memory _datasource, bytes[] memory _argN, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+        uint256 price = oracle.getPrice(_datasource, _feeLimit);
+        if(price > 1000 trx + feeLimit) {
+            return 0;
+        }
+        bytes memory args = ba2cbor(_argN);
+        return oracle.queryN_withGasLimit.value(price)(0, _datasource, args, _feeLimit);
+    }
+
 	function oracle_getPrice(string memory _datasource) internal oracleAPI returns(uint _queryPrice) {
 		return oracle.getPrice(_datasource);
 	}
