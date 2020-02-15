@@ -171,7 +171,169 @@ contract oracle {
         bytes memory args = ba2cbor(_argN);
         return oracle.queryN_withGasLimit.value(price)(_timestamp, _datasource, args, _feeLimit);
     }
+
+    function oracle_query(string memory _datasource, string[1] memory _args) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](1);
+        dynargs[0] = _args[0];
+        return oracle_query(_datasource, dynargs);
+    }
+
+    function oracle_query(uint _timestamp, string memory _datasource, string[1] memory _args) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](1);
+        dynargs[0] = _args[0];
+        return oracle_query(_timestamp, _datasource, dynargs);
+    }
+
+     function oracle_query(uint _timestamp, string memory _datasource, string[1] memory _args, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](1);
+        dynargs[0] = _args[0];
+        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+    }
+
+    function oracle_query(string memory _datasource, string[1] memory _args, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](1);
+        dynargs[0] = _args[0];
+        return oracle_query(_datasource, dynargs, _feeLimit);
+    }
+
+    function oracle_query(string memory _datasource, string[2] memory _args) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](2);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        return oracle_query(_datasource, dynargs);
+    }
+
+    function oracle_query(uint _timestamp, string memory _datasource, string[2] memory _args) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](2);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        return oracle_query(_timestamp, _datasource, dynargs);
+    }
+
+    function oracle_query(string memory _datasource, string[2] memory _args, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](2);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+    }
     
+    function oracle_query(string memory _datasource, string[2] memory _args, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](2);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        return oracle_query(_datasource, dynargs, _feeLimit);
+    }
+    
+    function oracle_query(string memory _datasource, string[3] memory _args) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](3);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        dynargs[2] = _args[2];
+        return oracle_query(_datasource, dynargs);
+    }
+    
+    function oracle_query(uint _timestamp, string memory _datasource, string[3] memory _args) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](3);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        dynargs[2] = _args[2];
+        return oracle_query(_timestamp, _datasource, dynargs);
+    }
+    
+    function oracle_query(uint _timestamp, string memory _datasource, string[3] memory _args, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](3);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        dynargs[2] = _args[2];
+        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+    }
+
+    function oracle_query(string memory _datasource, string[3] memory _args, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](3);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        dynargs[2] = _args[2];
+        return oracle_query(_datasource, dynargs, _feeLimit);
+    }
+
+    function oracle_query(string memory _datasource, string[4] memory _args) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](4);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        dynargs[2] = _args[2];
+        dynargs[3] = _args[3];
+        return oracle_query(_datasource, dynargs);
+    }
+
+    function oracle_query(uint _timestamp, string memory _datasource, string[4] memory _args) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](4);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        dynargs[2] = _args[2];
+        dynargs[3] = _args[3];
+        return oracle_query(_timestamp, _datasource, dynargs);
+    }
+
+    function oracle_query(uint _timestamp, string memory _datasource, string[4] memory _args, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](4);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        dynargs[2] = _args[2];
+        dynargs[3] = _args[3];
+        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+    }
+
+    function oracle_query(string memory _datasource, string[4] memory _args, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](4);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        dynargs[2] = _args[2];
+        dynargs[3] = _args[3];
+        return oracle_query(_datasource, dynargs, _feeLimit);
+    }
+
+    function oracle_query(string memory _datasource, string[5] memory _args) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](5);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        dynargs[2] = _args[2];
+        dynargs[3] = _args[3];
+        dynargs[4] = _args[4];
+        return oracle_query(_datasource, dynargs);
+    }
+
+    function oracle_query(uint _timestamp, string memory _datasource, string[5] memory _args) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](5);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        dynargs[2] = _args[2];
+        dynargs[3] = _args[3];
+        dynargs[4] = _args[4];
+        return oracle_query(_timestamp, _datasource, dynargs);
+    }
+    
+    function oracle_query(uint _timestamp, string memory _datasource, string[5] memory _args, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](5);
+        dynargs[0] = _args[0];
+        dynargs[2] = _args[2];
+        dynargs[1] = _args[1];
+        dynargs[3] = _args[3];
+        dynargs[4] = _args[4];
+        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+    }
+
+    function oracle_query(uint _timestamp, string memory _datasource, string[5] memory _args) public oracleAPI returns(bytes32 _id) {
+        string[] memory dynargs = new string[](5);
+        dynargs[0] = _args[0];
+        dynargs[1] = _args[1];
+        dynargs[2] = _args[2];
+        dynargs[3] = _args[3];
+        dynargs[4] = _args[4];
+        return oracle_query(_datasource, dynargs, _feeLimit);
+    }
+
+    
+
 	function oracle_getPrice(string memory _datasource) internal oracleAPI returns(uint _queryPrice) {
 		return oracle.getPrice(_datasource);
 	}
