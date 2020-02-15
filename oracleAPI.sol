@@ -124,8 +124,16 @@ contract oracle {
         }
         bytes memory args = stra2cbor(_argN);
         return oracle.queryN.value(price)(0, _datasource, args);
-    } 
+    }
 
+    function oracle_query(uint _timestamp, string memory _datasource, string[] memory _argN) public oracleAPI returns(bytes32 _id) {
+        uint256 price = oracle.getPrice(_datasource);
+        if(price > 1000 trx + feeLimit) {
+            return 0;
+        }
+        bytes memory args = stra2cbor(_argN);
+        return oracle.queryN.value(price)(_timestamp, _datasource, args);
+    }
 
 	function oracle_getPrice(string memory _datasource) internal oracleAPI returns(uint _queryPrice) {
 		return oracle.getPrice(_datasource);
