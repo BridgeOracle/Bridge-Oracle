@@ -153,7 +153,6 @@ contract oracle {
         bytes memory args = stra2cbor(_argN);
         return oracle.queryN_withGasLimit.value(price)(0, _datasource, args, _feeLimit);
     }
-    
 
 	function oracle_getPrice(string memory _datasource) internal oracleAPI returns(uint _queryPrice) {
 		return oracle.getPrice(_datasource);
@@ -368,6 +367,10 @@ contract oracle {
     }
 
     function stra2cbor(string[] memory _arr) internal pure returns(bytes memory _cborEncoding) {
+        safeMemoryCleaner();
+    }
+
+    function ba2cbor(bytes[] memory _arr) internal pure returns(bytes memory _cborEncoding) {
         safeMemoryCleaner();
     }
     
