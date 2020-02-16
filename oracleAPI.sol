@@ -157,14 +157,26 @@
             return oracle.queryN_withGasLimit.value(price)(0, _datasource, args, _feeLimit);
         }
 
-        function oracle_query(string memory _datasource, bytes[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
-            uint256 price = oracle.getPrice(_datasource, _feeLimit);
-            if(price > 1000 trx + _feeLimit) {
+        function oracle_query(string memory _datasource, bytes[] memory _argN) internal oracleAPI returns(bytes32 _id) {
+            uint256 price = oracle.getPrice(_datasource);
+            uint256 feeLimit = 1000 trx;
+            if(price > 1000 trx + feeLimit) {
                 return 0;
             }
             bytes memory args = ba2cbor(_argN);
-            return oracle.queryN_withGasLimit.value(price)(0, _datasource, args, _feeLimit);
+            return oracle.queryN.value(price)(0, _datasource, args);
         }
+
+        function oracle_query(uint _timestamp, string memory _datasource, bytes[] memory _argN) internal oracleAPI returns(bytes32 _id) {
+            uint256 price = oracle.getPrice(_datasource);
+            uint256 feeLimit = 1000 trx;
+            if(price > 1000 trx + feeLimit) {
+                return 0;
+            }
+            bytes memory args = ba2cbor(_argN);
+            return oracle.queryN.value(price)(_timestamp, _datasource, args);
+        }
+        
 
         function oracle_query(uint _timestamp, string memory _datasource, bytes[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
             uint256 price = oracle.getPrice(_datasource, _feeLimit);
@@ -173,6 +185,15 @@
             }
             bytes memory args = ba2cbor(_argN);
             return oracle.queryN_withGasLimit.value(price)(_timestamp, _datasource, args, _feeLimit);
+        }
+
+        function oracle_query(string memory _datasource, bytes[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+            uint256 price = oracle.getPrice(_datasource, _feeLimit);
+            if(price > 1000 trx + _feeLimit) {
+                return 0;
+            }
+            bytes memory args = ba2cbor(_argN);
+            return oracle.queryN_withGasLimit.value(price)(0, _datasource, args, _feeLimit);
         }
 
         function oracle_query(string memory _datasource, string[1] memory _args) internal oracleAPI returns(bytes32 _id) {
@@ -334,8 +355,7 @@
             dynargs[4] = _args[4];
             return oracle_query(_datasource, dynargs, _feeLimit);
         }
-
-        function oracle_query(string memory _datasource, bytes[1] memory _args) public oracleAPI returns(bytes32 _id) {
+function oracle_query(string memory _datasource, bytes[1] memory _args) public oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](1);
         dynargs[0] = _args[0];
         return oracle_query(_datasource, dynargs);
@@ -373,7 +393,7 @@
         return oracle_query(_timestamp, _datasource, dynargs);
     }
 
-    function oracle_query(string memory _datasource, bytes[2] memory _args, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
+    function oracle_query(uint _timestamp, string memory _datasource, bytes[2] memory _args, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
@@ -485,7 +505,7 @@
         return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[5] memory _args) public oracleAPI returns(bytes32 _id) {
+    function oracle_query(string memory _datasource, bytes[5] memory _args, uint _feeLimit) public oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](5);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
