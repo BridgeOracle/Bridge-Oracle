@@ -206,7 +206,7 @@ contract OracleAddrResolverI {
 
 contract oracle {
 
-    using Buffer for Buffer.buffer;
+    using CBOR for Buffer.buffer;
     
     OracleAddrResolverI OAR;
     oracleI oracle;
