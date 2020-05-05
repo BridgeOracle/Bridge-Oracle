@@ -68,7 +68,7 @@
             price_multiplier[dsname_hash] = multiplier;
         }
     
-        function cbAddress() internal view returns(address _cbAddress) {
+        function cbAddress() external view returns(address _cbAddress) {
             if(cbAddresses[tx.origin] != 0)
                 _cbAddress = tx.origin;
         }
