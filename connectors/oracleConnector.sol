@@ -1,5 +1,11 @@
     pragma solidity ^0.5.9;
     
+    interface ITRC20 {
+        function balanceOf(address who) external returns (uint);
+        function transferFrom(address from, address to, uint256 value) external returns (bool);
+        function allowance(address owner, address spender) external view returns (uint256);
+    }
+
     contract Oracle {
         
         event Log1(address sender, bytes32 cid, uint timestamp, string _datasource, string _arg, uint feelimit);
@@ -10,12 +16,29 @@
         
         address internal paymentFlagger;
         mapping (address => bool) public offchainPayment;
+
+         bool public usingToken;
+
+        function tokenPermission() public onlyAdmin {
+            if(usingToken)
+                usingToken = false;
+            else
+                usingToken = true;
+        }
+
+
+        uint256 private tokenPrice;
+
+        function setTokenPrice(uint256 _price) public onlyAdmin {
+            tokenPrice = _price;
+            emit updatePrice(_price, now);
+        }
         
         
         mapping(address => uint) internal reqc;
         mapping(address => byte) public cbAddresses;
         uint public basePrice;
-        uint256 public maxBandWidthPrice;
+        uint256 public maxBandWidthPrice; 
         uint256 public defaultFeeLimit;
         bytes32[] dsources;
         address private owner;
@@ -104,7 +127,7 @@
     
         function costs(string memory datasource, uint feelimit) private returns(uint _price) {
             _price = getPrice(datasource, feelimit, msg.sender);
-    
+            address _owner = msg.sender;
             if (msg.value >= _price) {
                 uint diff  = msg.value - _price;
                 if (diff > 0) {
