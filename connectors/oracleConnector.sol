@@ -119,7 +119,7 @@
             if(offchainPayment[_addr]) {
                 return 0;
             }
-            require(_feeLimit <= 1000000000);
+            require(_feeLimit <= defaultFeeLimit);
             _dsprice = price[sha256(abi.encodePacked(_datasource))];
             _dsprice += maxBandWidthPrice + _feeLimit;
             return _dsprice;
