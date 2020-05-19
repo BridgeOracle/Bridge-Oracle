@@ -22,9 +22,8 @@ contract OracleAddrResolver {
         return oracleType[_oracleType];
     }
     
-    function setAddr(address newaddr) public {
-        require(owner == msg.sender);
-        addr = newaddr;
+    function addOracleType(string memory oracleName, address oracleAddress) onlyOwner public {
+        oracleType[oracleName] == oracleAddress;
     }
     
 }
