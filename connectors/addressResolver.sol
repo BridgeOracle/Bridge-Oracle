@@ -1,10 +1,12 @@
-pragma solidity ^0.5.9;
+pragma solidity ^0.6.4;
 
 contract OracleAddrResolver {
 
     mapping(string => address) public oracleType;
     
     address owner;
+
+    string[] public oracles;
     
     constructor() public {
         owner = msg.sender;
@@ -12,6 +14,7 @@ contract OracleAddrResolver {
 
     modifier onlyOwner() {
         require(msg.sender == owner);
+        _;
     }
     
     function changeOwner(address newowner) onlyOwner public{
@@ -29,5 +32,6 @@ contract OracleAddrResolver {
     function removeOracleType(string memory oracleName) onlyOwner public {
         delete oracleType[oracleName];
     }
+
     
 }
