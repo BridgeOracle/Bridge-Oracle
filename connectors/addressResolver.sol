@@ -9,6 +9,10 @@ contract OracleAddrResolver {
     constructor() public {
         owner = msg.sender;
     }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+    }
     
     function changeOwner(address newowner) public{
         require(owner == msg.sender);
