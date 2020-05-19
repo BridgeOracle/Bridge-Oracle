@@ -23,7 +23,11 @@ contract OracleAddrResolver {
     }
     
     function addOracleType(string memory oracleName, address oracleAddress) onlyOwner public {
-        oracleType[oracleName] == oracleAddress;
+        oracleType[oracleName] = oracleAddress;
+    }
+
+    function removeOracleType(string memory oracleName) onlyOwner public {
+        delete oracleType[oracleName];
     }
     
 }
