@@ -14,8 +14,7 @@ contract OracleAddrResolver {
         require(msg.sender == owner);
     }
     
-    function changeOwner(address newowner) public{
-        require(owner == msg.sender);
+    function changeOwner(address newowner) onlyOwner public{
         owner = newowner;
     }
     
