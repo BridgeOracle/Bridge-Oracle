@@ -18,8 +18,8 @@ contract OracleAddrResolver {
         owner = newowner;
     }
     
-    function getAddress() public returns (address oaddr){
-        return addr;
+    function getAddress(string memory _oracleType) public returns (address oaddr){
+        return oracleType[_oracleType];
     }
     
     function setAddr(address newaddr) public {
