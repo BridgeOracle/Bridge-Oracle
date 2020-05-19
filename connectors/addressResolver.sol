@@ -2,7 +2,7 @@ pragma solidity ^0.5.9;
 
 contract OracleAddrResolver {
 
-    mapping(address => address) public Oracle_type;
+    mapping(string => address) public Oracle_type;
     
     address owner;
     
