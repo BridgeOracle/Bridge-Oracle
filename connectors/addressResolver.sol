@@ -26,7 +26,7 @@ contract OracleAddrResolver {
     }
     
     function addOracleType(string memory oracleName, address oracleAddress) onlyOwner public {
-        require(oracleType[oracleName] = address(0));
+        require(oracleType[oracleName] == address(0));
         oracles.push(oracleName);
         oracleType[oracleName] = oracleAddress;
     }
