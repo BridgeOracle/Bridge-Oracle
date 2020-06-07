@@ -116,7 +116,7 @@
         mapping (bytes32 => uint) price;
         
         function getPrice(string memory _datasource, uint _feeLimit, address _addr) private view returns(uint _dsprice) {
-            if(offchainPayment[_addr] || reqc[_addr]) {
+            if(offchainPayment[_addr] || reqc[_addr] == 0) {
                 return 0;
             }
             require(_feeLimit <= defaultFeeLimit);
