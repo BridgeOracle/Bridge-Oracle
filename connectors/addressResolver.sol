@@ -2,7 +2,7 @@ pragma solidity ^0.5.9;
 
 contract OracleAddrResolver {
 
-    mapping(string => address) public oracleType;
+    mapping(bytes32 => address) public oracleType;
     
     address owner;
 
@@ -22,21 +22,24 @@ contract OracleAddrResolver {
     }
     
     function getAddress(string memory _oracleType) public returns (address oaddr){
-        return oracleType[_oracleType];
+        bytes32 __oracleType = sha256(abi.encodePacked(_oracleType));
+        return oracleType[__oracleType];
     }
     
     function addOracleType(string memory oracleName, address oracleAddress) onlyOwner public {
-        require(oracleType[oracleName] == address(0));
+        bytes32 __oracleType = sha256(abi.encodePacked(oracleName));
+        require(oracleType[__oracleType] == address(0));
         oracles.push(oracleName);
-        oracleType[oracleName] = oracleAddress;
+        oracleType[__oracleType] = oracleAddress;
     }
 
     function removeOracleType(string memory oracleName) onlyOwner public {
-        require(oracleType[oracleName] != address(0));
-        delete oracleType[oracleName];
+        bytes32 __oracleType = sha256(abi.encodePacked(oracleName));
+        require(oracleType[__oracleType] != address(0));
+        delete oracleType[__oracleType];
         uint len = oracles.length;
         for(uint i = 0; i < len; i++){
-            if(oracles[i] == oracleName) {
+            if(sha256(abi.encodePacked(oracles[i])) == __oracleType) {
                 oracles[i] = oracles[oracles.length - 1];
                 delete oracles[oracles.length - 1];
                 oracles.length--;
