@@ -201,7 +201,7 @@ library CBOR {
 }
 
 contract OracleAddrResolverI {
-    function getAddress() public returns(address _address);
+    function getAddress(string memory ot) public returns(address _address);
 }
 
 contract oracle {
@@ -219,8 +219,8 @@ contract oracle {
         if ((address(OAR) == address(0)) || (getCodeSize(address(OAR)) == 0)) {
             oracle_setNetwork();
         }
-        if(address(oracle) != OAR.getAddress()) {
-            oracle = oracleI(OAR.getAddress());
+        if(address(oracle) != OAR.getAddress("Normal")) {
+            oracle = oracleI(OAR.getAddress("Normal"));
         }
         _;
     }
