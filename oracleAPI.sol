@@ -204,7 +204,7 @@ contract OracleAddrResolverI {
     function getAddress(string memory ot) public returns(address _address);
 }
 
-contract oracle {
+contract bridge {
 
     using CBOR for Buffer.buffer;
     
@@ -225,7 +225,7 @@ contract oracle {
         _;
     }
 
-    function oracle_query(string memory _datasource, string memory _arg) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string memory _arg) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource);
         uint256 feeLimit = 1000 trx;
         if (price > 1000 trx + feeLimit) {
@@ -234,7 +234,7 @@ contract oracle {
         return oracle.query.value(price)(0, _datasource, _arg);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string memory _arg) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string memory _arg) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource);
         uint256 feeLimit = 1000 trx;
         if (price > 1000 trx + feeLimit) {
@@ -243,7 +243,7 @@ contract oracle {
         return oracle.query.value(price)(_timestamp, _datasource, _arg);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string memory _arg, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string memory _arg, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource, _feeLimit);
         if (price > 1000 trx + _feeLimit) {
             return 0; // Unexpectedly high price
@@ -251,7 +251,7 @@ contract oracle {
         return oracle.query_withFeeLimit.value(price)(_timestamp, _datasource, _arg, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string memory _arg, uint _feeLimit) internal oracleAPI returns (bytes32 _id) {
+    function bridge_query(string memory _datasource, string memory _arg, uint _feeLimit) internal oracleAPI returns (bytes32 _id) {
         uint price = oracle.getPrice(_datasource, _feeLimit);
         if (price > 1000 trx + _feeLimit) {
             return 0; // Unexpectedly high price
@@ -259,7 +259,7 @@ contract oracle {
         return oracle.query_withFeeLimit.value(price)(0, _datasource, _arg, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string memory _arg1, string memory _arg2) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string memory _arg1, string memory _arg2) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource);
         uint256 feeLimit = 1000 trx;
         if (price > 1000 trx + feeLimit) {
@@ -268,7 +268,7 @@ contract oracle {
             return oracle.query2.value(price)(0, _datasource, _arg1, _arg2);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource);
         uint256 feeLimit = 1000 trx;
         if (price > 1000 trx + feeLimit) {
@@ -277,7 +277,7 @@ contract oracle {
         return oracle.query2.value(price)(_timestamp, _datasource, _arg1, _arg2);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource, _feeLimit);
         if (price > 1000 trx + _feeLimit) {
             return 0; // Unexpectedly high price
@@ -285,7 +285,7 @@ contract oracle {
         return oracle.query2_withFeeLimit.value(price)(_timestamp, _datasource, _arg1, _arg2, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string memory _arg1, string memory _arg2, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string memory _arg1, string memory _arg2, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource, _feeLimit);
         if (price > 1000 trx + _feeLimit) {
             return 0; // Unexpectedly high price
@@ -293,7 +293,7 @@ contract oracle {
         return oracle.query2_withFeeLimit.value(price)(0, _datasource, _arg1, _arg2, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string[] memory _argN) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[] memory _argN) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource);
         uint256 feeLimit = 1000 trx;
         if(price > 1000 trx + feeLimit) {
@@ -303,7 +303,7 @@ contract oracle {
         return oracle.queryN.value(price)(0, _datasource, args);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string[] memory _argN) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[] memory _argN) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource);
         uint256 feeLimit = 1000 trx;
         if(price > 1000 trx + feeLimit) {
@@ -313,7 +313,7 @@ contract oracle {
         return oracle.queryN.value(price)(_timestamp, _datasource, args);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource, _feeLimit);
         if(price > 1000 trx + _feeLimit) {
             return 0;
@@ -322,7 +322,7 @@ contract oracle {
         return oracle.queryN_withGasLimit.value(price)(_timestamp, _datasource, args, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource, _feeLimit);
         uint256 feeLimit = 1000 trx;
         if(price > 1000 trx + feeLimit) {
@@ -332,7 +332,7 @@ contract oracle {
         return oracle.queryN_withGasLimit.value(price)(0, _datasource, args, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, bytes[] memory _argN) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[] memory _argN) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource);
         uint256 feeLimit = 1000 trx;
         if(price > 1000 trx + feeLimit) {
@@ -342,7 +342,7 @@ contract oracle {
         return oracle.queryN.value(price)(0, _datasource, args);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[] memory _argN) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[] memory _argN) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource);
         uint256 feeLimit = 1000 trx;
         if(price > 1000 trx + feeLimit) {
@@ -352,7 +352,7 @@ contract oracle {
         return oracle.queryN.value(price)(_timestamp, _datasource, args);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource, _feeLimit);
         if(price > 1000 trx + _feeLimit) {
             return 0;
@@ -361,7 +361,7 @@ contract oracle {
         return oracle.queryN_withGasLimit.value(price)(_timestamp, _datasource, args, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, bytes[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         uint256 price = oracle.getPrice(_datasource, _feeLimit);
         if(price > 1000 trx + _feeLimit) {
             return 0;
@@ -370,324 +370,324 @@ contract oracle {
         return oracle.queryN_withGasLimit.value(price)(0, _datasource, args, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string[1] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[1] memory _args) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](1);
         dynargs[0] = _args[0];
-        return oracle_query(_datasource, dynargs);
+        return bridge_query(_datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string[1] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[1] memory _args) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](1);
         dynargs[0] = _args[0];
-        return oracle_query(_timestamp, _datasource, dynargs);
+        return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string[1] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[1] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](1);
         dynargs[0] = _args[0];
-        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string[1] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[1] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](1);
         dynargs[0] = _args[0];
-        return oracle_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string[2] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[2] memory _args) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
-        return oracle_query(_datasource, dynargs);
+        return bridge_query(_datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string[2] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[2] memory _args) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
-        return oracle_query(_timestamp, _datasource, dynargs);
+        return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string[2] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[2] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
-        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string[2] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[2] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
-        return oracle_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string[3] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[3] memory _args) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](3);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
-        return oracle_query(_datasource, dynargs);
+        return bridge_query(_datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string[3] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[3] memory _args) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](3);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
-        return oracle_query(_timestamp, _datasource, dynargs);
+        return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string[3] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[3] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](3);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
-        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string[3] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[3] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](3);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
-        return oracle_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string[4] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[4] memory _args) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](4);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
-        return oracle_query(_datasource, dynargs);
+        return bridge_query(_datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string[4] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[4] memory _args) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](4);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
-        return oracle_query(_timestamp, _datasource, dynargs);
+        return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string[4] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[4] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](4);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
-        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string[4] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[4] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](4);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
-        return oracle_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string[5] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[5] memory _args) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](5);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
         dynargs[4] = _args[4];
-        return oracle_query(_datasource, dynargs);
+        return bridge_query(_datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string[5] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[5] memory _args) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](5);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
         dynargs[4] = _args[4];
-        return oracle_query(_timestamp, _datasource, dynargs);
+        return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, string[5] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[5] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](5);
         dynargs[0] = _args[0];
         dynargs[2] = _args[2];
         dynargs[1] = _args[1];
         dynargs[3] = _args[3];
         dynargs[4] = _args[4];
-        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, string[5] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[5] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](5);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
         dynargs[4] = _args[4];
-        return oracle_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, bytes[1] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[1] memory _args) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](1);
         dynargs[0] = _args[0];
-        return oracle_query(_datasource, dynargs);
+        return bridge_query(_datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[1] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[1] memory _args) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](1);
         dynargs[0] = _args[0];
-        return oracle_query(_timestamp, _datasource, dynargs);
+        return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[1] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[1] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](1);
         dynargs[0] = _args[0];
-        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, bytes[1] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[1] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](1);
         dynargs[0] = _args[0];
-        return oracle_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, bytes[2] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[2] memory _args) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
-        return oracle_query(_datasource, dynargs);
+        return bridge_query(_datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[2] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[2] memory _args) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
-        return oracle_query(_timestamp, _datasource, dynargs);
+        return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[2] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[2] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
-        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, bytes[2] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[2] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
-        return oracle_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, bytes[3] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[3] memory _args) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](3);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
-        return oracle_query(_datasource, dynargs);
+        return bridge_query(_datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[3] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[3] memory _args) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](3);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
-        return oracle_query(_timestamp, _datasource, dynargs);
+        return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[3] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[3] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](3);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
-        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, bytes[3] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[3] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](3);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
-        return oracle_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, bytes[4] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[4] memory _args) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](4);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
-        return oracle_query(_datasource, dynargs);
+        return bridge_query(_datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[4] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[4] memory _args) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](4);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
-        return oracle_query(_timestamp, _datasource, dynargs);
+        return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[4] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[4] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](4);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
-        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, bytes[4] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[4] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](4);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
-        return oracle_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, bytes[5] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[5] memory _args) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](5);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
         dynargs[4] = _args[4];
-        return oracle_query(_datasource, dynargs);
+        return bridge_query(_datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[5] memory _args) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[5] memory _args) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](5);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
         dynargs[4] = _args[4];
-        return oracle_query(_timestamp, _datasource, dynargs);
+        return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function oracle_query(uint _timestamp, string memory _datasource, bytes[5] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[5] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](5);
         dynargs[0] = _args[0];
         dynargs[2] = _args[2];
         dynargs[1] = _args[1];
         dynargs[3] = _args[3];
         dynargs[4] = _args[4];
-        return oracle_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
     }
 
-    function oracle_query(string memory _datasource, bytes[5] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[5] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](5);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
         dynargs[4] = _args[4];
-        return oracle_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _feeLimit);
     }
 
     function oracle_getPrice(string memory _datasource) internal oracleAPI returns(uint _queryPrice) {
@@ -708,8 +708,8 @@ contract oracle {
     }
 
     function oracle_setNetwork() internal returns (bool _networkSet) {
-        if (getCodeSize(0xC4c2ae73F8D30c696313530D43D45F071Ad0BB89) > 0) {
-            OAR = OracleAddrResolverI(0xC4c2ae73F8D30c696313530D43D45F071Ad0BB89);
+        if (getCodeSize(0xD61D5e750AFf3bD6dCd9b127B0B53f8ACB72B3aD) > 0) {
+            OAR = OracleAddrResolverI(0xD61D5e750AFf3bD6dCd9b127B0B53f8ACB72B3aD);
             oracle_setNetworkName("trx_shasta-test");
             return true;
         }
@@ -913,6 +913,14 @@ contract oracle {
 
     function ba2cbor(bytes[] memory _arr) internal pure returns(bytes memory _cborEncoding) {
         safeMemoryCleaner();
+        Buffer.buffer memory buf;
+        Buffer.init(buf, 1024);
+        buf.startArray();
+        for (uint i = 0; i < _arr.length; i++) {
+            buf.encodeBytes(_arr[i]);
+        }
+        buf.endSequence();
+        return buf.buf;
     }
 
     function safeMemoryCleaner() internal pure {
