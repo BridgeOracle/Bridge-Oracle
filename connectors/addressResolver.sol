@@ -2,6 +2,8 @@ pragma solidity ^0.5.9;
 
 contract OracleAddrResolver {
 
+    address public tokenAddress;
+
     mapping(bytes32 => address) public oracleType;
     
     address owner;
@@ -24,6 +26,14 @@ contract OracleAddrResolver {
     function getAddress(string memory _oracleType) public returns (address oaddr){
         bytes32 __oracleType = sha256(abi.encodePacked(_oracleType));
         return oracleType[__oracleType];
+    }
+
+    function setTokenAddress(address _tokenAddress) public onlyOwner{
+        tokenAddress = _tokenAddress;
+    }
+    
+    function getTokenAddress() public view returns(address _tokenAddress) {
+        return tokenAddress;
     }
     
     function addOracleType(string memory oracleName, address oracleAddress) onlyOwner public {
