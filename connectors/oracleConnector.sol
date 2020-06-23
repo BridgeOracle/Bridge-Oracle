@@ -39,13 +39,19 @@
         }
 
 
-
+        function getTokenPrice() public returns(uint256 _price) {
+            return tokenPrice;
+        }
 
         function tokenPermission() public onlyAdmin {
             if(usingToken)
                 usingToken = false;
             else
                 usingToken = true;
+        }
+
+        function getTokenStatus() external returns(bool _status) {
+            return usingToken;
         }
 
 
