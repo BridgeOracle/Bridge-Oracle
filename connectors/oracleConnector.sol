@@ -160,16 +160,29 @@
         }
     
         function costs(string memory datasource, uint feelimit) private returns(uint _price) {
-            _price = getPrice(datasource, feelimit, msg.sender);
+            (uint256 _TRXbasedPrice, uint256 _discountPrice) = getPrice(datasource, feelimit);
             address _owner = msg.sender;
-            if (msg.value >= _price) {
-                uint diff  = msg.value - _price;
-                if (diff > 0) {
-                    if (!msg.sender.send(diff)) {
-                        revert();
+
+            uint256 _tokenPrice = getTokenPrice();
+            uint256 _tokenBasedPrice = (_discountPrice * _tokenPrice)/10 ** Rdec;
+            // use BRG payment
+            if(usingToken && ITRC20(BRGaddr).balanceOf(_owner) >= _tokenBasedPrice){
+                require(ITRC20(BRGaddr).transferFrom(_owner, address(this), _tokenBasedPrice));
+            }
+            else {
+                // use TRX payment
+                if (msg.value >= _TRXbasedPrice) {
+                    uint diff  = msg.value - _TRXbasedPrice;
+                    if (diff > 0) {
+                        require(msg.sender.send(diff));
                     }
-                }
-            } else revert();
+                } else
+                    revert();
+            }
+        }
+
+        function getRelativeDecimal() external returns(uint256 _dec) {
+            return Rdec;
         }
         
         function withdrawFunds(address payable _addr) external onlyAdmin {
