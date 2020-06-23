@@ -15,6 +15,9 @@ contract oracleI {
     function queryN_withFeeLimit(uint _timestamp, string calldata _datasource, bytes calldata _argN, uint _gasLimit) external payable returns(bytes32 _id);
     function getPrice(string memory _datasource) public returns(uint256 TRXbasedPrice, uint256 discountPrice);
     function getPrice(string memory _datasource, uint _feeLimit) public returns(uint256 TRXbasedPrice, uint256 discountPrice);
+    function getTokenStatus() external view returns(bool _status);
+    function getRelativeDecimal() external returns(uint256 _dec);
+    function getTokenPrice() public returns(uint256 _price);
 }
 
 library Buffer {
@@ -205,6 +208,7 @@ library CBOR {
 
 contract OracleAddrResolverI {
     function getAddress(string memory ot) public returns(address _address);
+    function getTokenAddress() public returns(address oaddr);
 }
 
 contract bridge {
@@ -250,7 +254,6 @@ contract bridge {
             if (TRXbasedPrice > 1000 trx) {
                 return 0; // Unexpectedly high price
             }
-            tokPrice = discountPrice;
             if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
                 require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
                 return oracle.query.value(0)(timeout, _datasource, _arg);
@@ -294,7 +297,7 @@ contract bridge {
         }
     }
 
-    function paymentN(uint256 timeout, string memory _datasource, bytes memory _args, uint256 _feelimit) public returns(bytes32 _id) {
+    function paymentN(uint256 timeout, string memory _datasource, bytes memory _args, uint256 _feelimit) internal returns(bytes32 _id) {
         uint256 tokenPrice = oracle.getTokenPrice();
         if(_feelimit > 0) {
             (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource, _feelimit);
