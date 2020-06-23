@@ -43,6 +43,11 @@
             return tokenPrice;
         }
 
+
+        function relativeDecimal(uint256 _decimal) public onlyAdmin {
+            Rdec = _decimal;
+        }
+
         function tokenPermission() public onlyAdmin {
             if(usingToken)
                 usingToken = false;
