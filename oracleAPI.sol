@@ -1,7 +1,5 @@
 pragma solidity ^0.5.9;
 
-
-
 contract oracleI {
     address public cbAddress;
     function query(uint _timestamp, string calldata _datasource, string calldata _arg) external payable returns(bytes32 _id);
@@ -10,8 +8,8 @@ contract oracleI {
     function query2_withFeeLimit(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2, uint _feeLimit) external payable returns(bytes32 _id);
     function queryN(uint _timestamp, string memory _datasource, bytes memory _argN) public payable returns(bytes32 _id);
     function queryN_withFeeLimit(uint _timestamp, string calldata _datasource, bytes calldata _argN, uint _gasLimit) external payable returns(bytes32 _id);
-    function getPrice(string memory _datasource) public returns(uint _dsprice);
-    function getPrice(string memory _datasource, uint _feeLimit) public returns(uint _dsprice);
+    function getPrice(string memory _datasource) public returns(uint256 TRXbasedPrice, uint256 discountPrice);
+    function getPrice(string memory _datasource, uint _feeLimit) public returns(uint256 TRXbasedPrice, uint256 discountPrice);
 }
 
 library Buffer {
@@ -715,11 +713,11 @@ contract bridge {
         return bridge_query(_datasource, dynargs, _feeLimit);
     }
 
-    function oracle_getPrice(string memory _datasource) internal oracleAPI returns(uint _queryPrice) {
+    function oracle_getPrice(string memory _datasource) internal oracleAPI returns(uint256 TRXbasedPrice, uint256 discountPrice) {
         return oracle.getPrice(_datasource);
     }
 
-    function oracle_getPrice(string memory _datasource, uint _feeLimit) internal oracleAPI returns(uint _queryPrice) {
+    function oracle_getPrice(string memory _datasource, uint _feeLimit) internal oracleAPI returns(uint256 TRXbasedPrice, uint256 discountPrice) {
         return oracle.getPrice(_datasource, _feeLimit);
     }
 
