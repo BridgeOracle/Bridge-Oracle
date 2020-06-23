@@ -22,6 +22,12 @@
 
         address public validBot;
 
+        address private BRGaddr;
+
+        function setBRGaddr(address _newAddress) public onlyAdmin {
+            BRGaddr = _newAddress;
+        }
+
         modifier onlyPriceBot {
             require(validBot == msg.sender);
             _;
