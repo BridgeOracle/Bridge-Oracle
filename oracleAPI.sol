@@ -1,5 +1,10 @@
 pragma solidity ^0.5.9;
 
+interface ITRC20 {
+    function balanceOf(address account) external view returns (uint256);
+    function approve(address spender, uint256 amount) external returns (bool);
+}
+
 contract oracleI {
     address public cbAddress;
     function query(uint _timestamp, string calldata _datasource, string calldata _arg) external payable returns(bytes32 _id);
