@@ -9,7 +9,7 @@ contract oracleI {
     function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) public payable returns(bytes32 _id);
     function query2_withFeeLimit(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2, uint _feeLimit) external payable returns(bytes32 _id);
     function queryN(uint _timestamp, string memory _datasource, bytes memory _argN) public payable returns(bytes32 _id);
-    function queryN_withGasLimit(uint _timestamp, string calldata _datasource, bytes calldata _argN, uint _gasLimit) external payable returns(bytes32 _id);
+    function queryN_withFeeLimit(uint _timestamp, string calldata _datasource, bytes calldata _argN, uint _gasLimit) external payable returns(bytes32 _id);
     function getPrice(string memory _datasource) public returns(uint _dsprice);
     function getPrice(string memory _datasource, uint _feeLimit) public returns(uint _dsprice);
 }
@@ -225,13 +225,106 @@ contract bridge {
         _;
     }
 
-    function bridge_query(string memory _datasource, string memory _arg) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource);
-        uint256 feeLimit = 1000 trx;
-        if (price > 1000 trx + feeLimit) {
-            return 0; // Unexpectedly high price
+    function payment1(uint256 timeout, string memory _datasource, string memory _arg, uint256 _feelimit) internal returns(bytes32 _id) {
+        uint256 tokenPrice = oracle.getTokenPrice();
+        if(_feelimit > 0) {
+            (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource, _feelimit);
+            uint256 tokenBasedPrice = (discountPrice * tokenPrice)/10 ** oracle.getRelativeDecimal();
+            if (TRXbasedPrice > 1000 trx) {
+                return 0; // Unexpectedly high price
+            }
+            if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
+                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
+                return oracle.query_withFeeLimit.value(0)(timeout, _datasource, _arg, _feelimit);
+            }
+            else {
+                return oracle.query_withFeeLimit.value(TRXbasedPrice)(timeout,_datasource, _arg, _feelimit);
+            }
+
+        }else {
+            (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource);
+            uint256 tokenBasedPrice = (discountPrice * tokenPrice)/10 ** oracle.getRelativeDecimal();
+            if (TRXbasedPrice > 1000 trx) {
+                return 0; // Unexpectedly high price
+            }
+            tokPrice = discountPrice;
+            if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
+                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
+                return oracle.query.value(0)(timeout, _datasource, _arg);
+            }
+            else {
+                return oracle.query.value(TRXbasedPrice)(timeout,_datasource, _arg);
+            }
         }
-        return oracle.query.value(price)(0, _datasource, _arg);
+    }
+
+    function payment2(uint256 timeout, string memory _datasource, string memory _arg1, string memory _arg2, uint256 _feelimit) internal returns(bytes32 _id) {
+        uint256 tokenPrice = oracle.getTokenPrice();
+        if(_feelimit > 0) {
+            (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource, _feelimit);
+            uint256 tokenBasedPrice = (discountPrice * tokenPrice)/10 ** oracle.getRelativeDecimal();
+            if (TRXbasedPrice > 1000 trx) {
+                return 0; // Unexpectedly high price
+            }
+            if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
+                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
+                return oracle.query2_withFeeLimit.value(0)(timeout, _datasource, _arg1, _arg2, _feelimit);
+            }
+            else {
+                return oracle.query2_withFeeLimit.value(TRXbasedPrice)(timeout,_datasource, _arg1, _arg2, _feelimit);
+            }
+
+        }else {
+            (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource);
+            uint256 tokenBasedPrice = (discountPrice * tokenPrice)/10 ** oracle.getRelativeDecimal();
+            if (TRXbasedPrice > 1000 trx) {
+                return 0; // Unexpectedly high price
+            }
+            if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
+                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
+                return oracle.query2.value(0)(timeout, _datasource, _arg1, _arg2);
+            }
+            else {
+                return oracle.query2.value(TRXbasedPrice)(timeout,_datasource, _arg1, _arg2);
+            }
+
+        }
+    }
+
+    function paymentN(uint256 timeout, string memory _datasource, bytes memory _args, uint256 _feelimit) public returns(bytes32 _id) {
+        uint256 tokenPrice = oracle.getTokenPrice();
+        if(_feelimit > 0) {
+            (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource, _feelimit);
+            uint256 tokenBasedPrice = (discountPrice * tokenPrice)/10 ** oracle.getRelativeDecimal();
+            if (TRXbasedPrice > 1000 trx) {
+                return 0; // Unexpectedly high price
+            }
+            if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
+                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
+                return oracle.queryN_withFeeLimit.value(0)(timeout, _datasource, _args, _feelimit);
+            }
+            else {
+                return oracle.queryN_withFeeLimit.value(TRXbasedPrice)(timeout,_datasource, _args, _feelimit);
+            }
+
+        }else {
+            (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource);
+            uint256 tokenBasedPrice = (discountPrice * tokenPrice)/10 ** oracle.getRelativeDecimal();
+            if (TRXbasedPrice > 1000 trx) {
+                return 0; // Unexpectedly high price
+            }
+            if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
+                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
+                return oracle.queryN.value(0)(timeout, _datasource, _args);
+            }
+            else {
+                return oracle.queryN.value(TRXbasedPrice)(timeout,_datasource, _args);
+            }
+        }
+    }
+
+    function bridge_query(string memory _datasource, string memory _arg) internal oracleAPI returns(bytes32 _id) {
+        return payment1(0, _datasource, _arg, 0);
     }
 
     function bridge_query(uint _timestamp, string memory _datasource, string memory _arg) internal oracleAPI returns(bytes32 _id) {
