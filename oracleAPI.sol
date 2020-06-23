@@ -328,139 +328,71 @@ contract bridge {
     }
 
     function bridge_query(uint _timestamp, string memory _datasource, string memory _arg) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource);
-        uint256 feeLimit = 1000 trx;
-        if (price > 1000 trx + feeLimit) {
-            return 0; // Unexpectedly high price
-        }
-        return oracle.query.value(price)(_timestamp, _datasource, _arg);
+        return payment1(_timestamp, _datasource, _arg, 0);
     }
 
     function bridge_query(uint _timestamp, string memory _datasource, string memory _arg, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource, _feeLimit);
-        if (price > 1000 trx + _feeLimit) {
-            return 0; // Unexpectedly high price
-        }
-        return oracle.query_withFeeLimit.value(price)(_timestamp, _datasource, _arg, _feeLimit);
+        return payment1(_timestamp, _datasource, _arg, _feeLimit);
     }
 
     function bridge_query(string memory _datasource, string memory _arg, uint _feeLimit) internal oracleAPI returns (bytes32 _id) {
-        uint price = oracle.getPrice(_datasource, _feeLimit);
-        if (price > 1000 trx + _feeLimit) {
-            return 0; // Unexpectedly high price
-        }
-        return oracle.query_withFeeLimit.value(price)(0, _datasource, _arg, _feeLimit);
+        return payment1(0, _datasource, _arg, _feeLimit);
     }
 
     function bridge_query(string memory _datasource, string memory _arg1, string memory _arg2) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource);
-        uint256 feeLimit = 1000 trx;
-        if (price > 1000 trx + feeLimit) {
-            return 0; // Unexpectedly high price
-        }
-            return oracle.query2.value(price)(0, _datasource, _arg1, _arg2);
+        return payment2(0, _datasource, _arg1, _arg2, 0);
     }
 
     function bridge_query(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource);
-        uint256 feeLimit = 1000 trx;
-        if (price > 1000 trx + feeLimit) {
-            return 0; // Unexpectedly high price
-        }
-        return oracle.query2.value(price)(_timestamp, _datasource, _arg1, _arg2);
+        return payment2(_timestamp, _datasource, _arg1, _arg2, 0);
     }
 
     function bridge_query(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource, _feeLimit);
-        if (price > 1000 trx + _feeLimit) {
-            return 0; // Unexpectedly high price
-        }
-        return oracle.query2_withFeeLimit.value(price)(_timestamp, _datasource, _arg1, _arg2, _feeLimit);
+        return payment2(_timestamp, _datasource, _arg1, _arg2, _feeLimit);
     }
 
     function bridge_query(string memory _datasource, string memory _arg1, string memory _arg2, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource, _feeLimit);
-        if (price > 1000 trx + _feeLimit) {
-            return 0; // Unexpectedly high price
-        }
-        return oracle.query2_withFeeLimit.value(price)(0, _datasource, _arg1, _arg2, _feeLimit);
+       return payment2(0, _datasource, _arg1, _arg2, _feeLimit);
     }
 
     function bridge_query(string memory _datasource, string[] memory _argN) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource);
-        uint256 feeLimit = 1000 trx;
-        if(price > 1000 trx + feeLimit) {
-            return 0;
-        }
         bytes memory args = stra2cbor(_argN);
-        return oracle.queryN.value(price)(0, _datasource, args);
+        return paymentN(0, _datasource, args, 0);
     }
 
     function bridge_query(uint _timestamp, string memory _datasource, string[] memory _argN) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource);
-        uint256 feeLimit = 1000 trx;
-        if(price > 1000 trx + feeLimit) {
-            return 0;
-        }
         bytes memory args = stra2cbor(_argN);
-        return oracle.queryN.value(price)(_timestamp, _datasource, args);
+        return paymentN(_timestamp, _datasource, args, 0);
     }
 
     function bridge_query(uint _timestamp, string memory _datasource, string[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource, _feeLimit);
-        if(price > 1000 trx + _feeLimit) {
-            return 0;
-        }
         bytes memory args = stra2cbor(_argN);
-        return oracle.queryN_withGasLimit.value(price)(_timestamp, _datasource, args, _feeLimit);
+        return paymentN(_timestamp, _datasource, args, _feeLimit);
     }
 
     function bridge_query(string memory _datasource, string[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource, _feeLimit);
-        uint256 feeLimit = 1000 trx;
-        if(price > 1000 trx + feeLimit) {
-            return 0;
-        }
         bytes memory args = stra2cbor(_argN);
-        return oracle.queryN_withGasLimit.value(price)(0, _datasource, args, _feeLimit);
+        return paymentN(0, _datasource, args, _feeLimit);
     }
 
     function bridge_query(string memory _datasource, bytes[] memory _argN) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource);
-        uint256 feeLimit = 1000 trx;
-        if(price > 1000 trx + feeLimit) {
-            return 0;
-        }
         bytes memory args = ba2cbor(_argN);
-        return oracle.queryN.value(price)(0, _datasource, args);
+        return paymentN(0, _datasource, args, 0);
     }
 
     function bridge_query(uint _timestamp, string memory _datasource, bytes[] memory _argN) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource);
-        uint256 feeLimit = 1000 trx;
-        if(price > 1000 trx + feeLimit) {
-            return 0;
-        }
         bytes memory args = ba2cbor(_argN);
-        return oracle.queryN.value(price)(_timestamp, _datasource, args);
+        return paymentN(_timestamp, _datasource, args, 0);
     }
 
     function bridge_query(uint _timestamp, string memory _datasource, bytes[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource, _feeLimit);
-        if(price > 1000 trx + _feeLimit) {
-            return 0;
-        }
         bytes memory args = ba2cbor(_argN);
-        return oracle.queryN_withGasLimit.value(price)(_timestamp, _datasource, args, _feeLimit);
+        return paymentN(_timestamp, _datasource, args, _feeLimit);
     }
 
     function bridge_query(string memory _datasource, bytes[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
-        uint256 price = oracle.getPrice(_datasource, _feeLimit);
-        if(price > 1000 trx + _feeLimit) {
-            return 0;
-        }
         bytes memory args = ba2cbor(_argN);
-        return oracle.queryN_withGasLimit.value(price)(0, _datasource, args, _feeLimit);
+        return paymentN(0, _datasource, args, _feeLimit);
     }
 
     function bridge_query(string memory _datasource, string[1] memory _args) internal oracleAPI returns(bytes32 _id) {
