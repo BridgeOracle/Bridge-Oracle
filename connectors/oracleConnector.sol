@@ -43,7 +43,7 @@
             return tokenPrice;
         }
 
-
+        uint256 public Rdec;
         function relativeDecimal(uint256 _decimal) public onlyAdmin {
             Rdec = _decimal;
         }
@@ -134,28 +134,29 @@
             for (uint i =0; i< dsources.length; i++) price[dsources[i]] = new_baseprice*price_multiplier[dsources[i]];
         }
         
-        function getPrice(string memory _datasource) public view  returns(uint _dsprice) {
+        function getPrice(string memory _datasource) public view  returns(uint256 TRXbasedPrice, uint256 discountPrice) {
             return getPrice(_datasource, msg.sender);
         }
         
-        function getPrice(string memory _datasource, uint _feeLimit) public view returns(uint _dsprice) {
+        function getPrice(string memory _datasource, uint _feeLimit) public view returns(uint256 TRXbasedPrice, uint256 discountPrice) {
             return getPrice(_datasource, _feeLimit, msg.sender);
         }
         
-        function getPrice(string memory _datasource, address _addr) private view returns(uint _dsprice) {
+        function getPrice(string memory _datasource, address _addr) private view returns(uint256 TRXbasedPrice, uint256 discountPrice) {
             return getPrice(_datasource, defaultFeeLimit, _addr);
         }
         
         mapping (bytes32 => uint) price;
         
-        function getPrice(string memory _datasource, uint _feeLimit, address _addr) private view returns(uint _dsprice) {
+        function getPrice(string memory _datasource, uint _feeLimit, address _addr) private view returns(uint TRXbasedPrice, uint discountPrice) {
             if(offchainPayment[_addr] || reqc[_addr] == 0) {
-                return 0;
+                return (0, 0);
             }
             require(_feeLimit <= defaultFeeLimit);
-            _dsprice = price[sha256(abi.encodePacked(_datasource))];
-            _dsprice += maxBandWidthPrice + _feeLimit;
-            return _dsprice;
+            uint256 _dsprice = price[sha256(abi.encodePacked(_datasource))];
+            TRXbasedPrice = _dsprice + maxBandWidthPrice + _feeLimit;
+            discountPrice = (_dsprice - (_dsprice / 10)) + maxBandWidthPrice + _feeLimit;
+            return (TRXbasedPrice, discountPrice);
         }
     
         function costs(string memory datasource, uint feelimit) private returns(uint _price) {
