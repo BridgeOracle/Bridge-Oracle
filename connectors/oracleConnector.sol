@@ -147,6 +147,14 @@
         }
         
         mapping (bytes32 => uint) price;
+
+
+        uint256 public discount;
+
+
+        function setDiscount(uint256 _amount) public onlyAdmin {
+            discount = _amount;
+        } 
         
         function getPrice(string memory _datasource, uint _feeLimit, address _addr) private view returns(uint TRXbasedPrice, uint discountPrice) {
             if(offchainPayment[_addr] || reqc[_addr] == 0) {
@@ -155,7 +163,7 @@
             require(_feeLimit <= defaultFeeLimit);
             uint256 _dsprice = price[sha256(abi.encodePacked(_datasource))];
             TRXbasedPrice = _dsprice + maxBandWidthPrice + _feeLimit;
-            discountPrice = (_dsprice - (_dsprice / 10)) + maxBandWidthPrice + _feeLimit;
+            discountPrice = (_dsprice - ((_dsprice * discount) / 100)) + maxBandWidthPrice + _feeLimit;
             return (TRXbasedPrice, discountPrice);
         }
     
