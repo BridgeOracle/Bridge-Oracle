@@ -153,7 +153,7 @@
 
 
         function setDiscount(uint256 _amount) public onlyAdmin {
-            require(_amount =< 100);
+            require(_amount <= 100);
             discount = _amount;
         } 
         
