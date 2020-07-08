@@ -250,7 +250,7 @@ contract OracleAddrResolverI {
     function getTokenAddress() public returns(address oaddr);
 }
 
-contract bridge {
+contract BridgePublicAPI {
 
     using CBOR for Buffer.buffer;
     
