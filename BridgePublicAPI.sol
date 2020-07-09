@@ -778,8 +778,8 @@ contract BridgePublicAPI {
     }
 
     function oracle_setNetwork() internal returns (bool _networkSet) {
-        if (getCodeSize(0xD61D5e750AFf3bD6dCd9b127B0B53f8ACB72B3aD) > 0) {
-            OAR = OracleAddrResolverI(0xD61D5e750AFf3bD6dCd9b127B0B53f8ACB72B3aD);
+        if (getCodeSize(0x292e33d054903Bf949b779A7A11ab799006cc7AC) > 0) {
+            OAR = OracleAddrResolverI(0x292e33d054903Bf949b779A7A11ab799006cc7AC);
             oracle_setNetworkName("trx_shasta");
             return true;
         }
