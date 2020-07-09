@@ -265,8 +265,8 @@ contract BridgePublicAPI {
         if ((address(OAR) == address(0)) || (getCodeSize(address(OAR)) == 0)) {
             oracle_setNetwork();
         }
-        if(address(oracle) != OAR.getAddress("Normal")) {
-            oracle = oracleI(OAR.getAddress("Normal"));
+        if(address(oracle) != OAR.getAddress("public")) {
+            oracle = oracleI(OAR.getAddress("public"));
         }
         _;
     }
@@ -280,7 +280,7 @@ contract BridgePublicAPI {
                 return 0; // Unexpectedly high price
             }
             if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
-                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
+                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("public"), tokenBasedPrice));
                 return oracle.query_withFeeLimit.value(0)(timeout, _datasource, _arg, _feelimit);
             }
             else {
@@ -294,7 +294,7 @@ contract BridgePublicAPI {
                 return 0; // Unexpectedly high price
             }
             if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
-                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
+                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("public"), tokenBasedPrice));
                 return oracle.query.value(0)(timeout, _datasource, _arg);
             }
             else {
@@ -312,7 +312,7 @@ contract BridgePublicAPI {
                 return 0; // Unexpectedly high price
             }
             if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
-                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
+                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("public"), tokenBasedPrice));
                 return oracle.query2_withFeeLimit.value(0)(timeout, _datasource, _arg1, _arg2, _feelimit);
             }
             else {
@@ -326,7 +326,7 @@ contract BridgePublicAPI {
                 return 0; // Unexpectedly high price
             }
             if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
-                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
+                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("public"), tokenBasedPrice));
                 return oracle.query2.value(0)(timeout, _datasource, _arg1, _arg2);
             }
             else {
@@ -345,7 +345,7 @@ contract BridgePublicAPI {
                 return 0; // Unexpectedly high price
             }
             if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
-                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
+                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("public"), tokenBasedPrice));
                 return oracle.queryN_withFeeLimit.value(0)(timeout, _datasource, _args, _feelimit);
             }
             else {
@@ -359,7 +359,7 @@ contract BridgePublicAPI {
                 return 0; // Unexpectedly high price
             }
             if(oracle.getTokenStatus() && ITRC20(OAR.getTokenAddress()).balanceOf(address(this)) >= tokenBasedPrice){
-                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("Normal"), tokenBasedPrice));
+                require(ITRC20(OAR.getTokenAddress()).approve(OAR.getAddress("public"), tokenBasedPrice));
                 return oracle.queryN.value(0)(timeout, _datasource, _args);
             }
             else {
