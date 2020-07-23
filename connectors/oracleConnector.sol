@@ -24,6 +24,11 @@
 
         address private BRGaddr;
 
+        function getReqc(address _client) public view returns (uint256 _count){
+            require(msg.sender == cbAddress());
+            return reqc[_client];
+        }
+
         function setBRGaddr(address _newAddress) public onlyAdmin {
             BRGaddr = _newAddress;
         }
@@ -124,7 +129,7 @@
             price_multiplier[dsname_hash] = multiplier;
         }
     
-        function cbAddress() external view returns(address _cbAddress) {
+        function cbAddress() public view returns(address _cbAddress) {
             if(cbAddresses[tx.origin] != 0)
                 _cbAddress = tx.origin;
         }
