@@ -128,6 +128,20 @@
             dsources[dsources.length++] = dsname_hash;
             price_multiplier[dsname_hash] = multiplier;
         }
+
+        function removeDSource(string memory dsname) public onlyAdmin {
+        bytes32 dsname_hash = sha256(abi.encodePacked(dsname));
+        delete price_multiplier[dsname_hash];
+        uint len = dsources.length;
+        for(uint i = 0; i < len; i++){
+            if(dsources[i] == dsname_hash) {
+                dsources[i] = dsources[dsources.length - 1];
+                delete dsources[dsources.length - 1];
+                dsources.length--;
+                break;
+            }
+        }
+    }
     
         function cbAddress() public view returns(address _cbAddress) {
             if(cbAddresses[tx.origin] != 0)
