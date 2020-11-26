@@ -782,6 +782,10 @@ contract BridgePublicAPI {
             OAR = OracleAddrResolverI(0x292e33d054903Bf949b779A7A11ab799006cc7AC);
             oracle_setNetworkName("trx_shasta");
             return true;
+        }else if (getCodeSize(0x23F4d2D5b2762cEAd4C8d511C329b46D1c84EF92) > 0) {
+            OAR = OracleAddrResolverI(0x23F4d2D5b2762cEAd4C8d511C329b46D1c84EF92);
+            oracle_setNetworkName("trx_nile");
+            return true;
         }
         return false;
     }
