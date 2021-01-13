@@ -8,9 +8,9 @@
 
     contract Oracle {
         
-        event Log1(address sender, bytes32 cid, uint timeout, string _datasource, string _arg, uint feelimit, uint256 timestamp);
-        event Log2(address sender, bytes32 cid, uint timeout, string _datasource, string _arg1, string _arg2, uint feelimit, uint256 timestamp);
-        event logN(address sender, bytes32 cid, uint timeout, string _datasource, bytes args, uint feelimit, uint256 timestamp);
+        event Log1(address sender, bytes32 cid, uint timeout, string _datasource, string _arg, uint feelimit, uint256 timestamp, uint8 chainId);
+        event Log2(address sender, bytes32 cid, uint timeout, string _datasource, string _arg1, string _arg2, uint feelimit, uint256 timestamp, uint8 chainId);
+        event logN(address sender, bytes32 cid, uint timeout, string _datasource, bytes args, uint feelimit, uint256 timestamp, uint8 chainId);
         
         event updatePrice(uint256 price, uint256 timestamp);
         event Emit_OffchainPaymentFlag(address indexed idx_sender, address sender, bool indexed idx_flag, bool flag);
@@ -250,7 +250,7 @@
             costs(_datasource, _feeLimit);
             _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
             reqc[msg.sender]++;
-            emit Log1(msg.sender, _id, _timestamp, _datasource, _arg, _feeLimit, now);
+            emit Log1(msg.sender, _id, _timestamp, _datasource, _arg, _feeLimit, now, 2);
             return _id;
         }
     
@@ -258,7 +258,7 @@
             costs(_datasource, _feeLimit);
             _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
             reqc[msg.sender]++;
-            emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _feeLimit, now);
+            emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _feeLimit, now, 2);
             return _id;
         }
     
@@ -266,7 +266,7 @@
             costs(_datasource, _feelimit);
             _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
             reqc[msg.sender]++;
-            emit logN(msg.sender, _id, _timestamp, _datasource, _args, _feelimit, now);
+            emit logN(msg.sender, _id, _timestamp, _datasource, _args, _feelimit, now, 2);
             return _id;
         }
     }
