@@ -8,9 +8,9 @@
 
     contract Oracle {
         
-        event Log1(address sender, bytes32 cid, uint timeout, string _datasource, string _arg, uint feelimit, uint256 timestamp, uint8 chainId);
-        event Log2(address sender, bytes32 cid, uint timeout, string _datasource, string _arg1, string _arg2, uint feelimit, uint256 timestamp, uint8 chainId);
-        event logN(address sender, bytes32 cid, uint timeout, string _datasource, bytes args, uint feelimit, uint256 timestamp, uint8 chainId);
+        event Log1(address sender, bytes32 cid, uint timeout, string _datasource, string _arg, uint feelimit, uint256 timestamp, uint8 _chainId);
+        event Log2(address sender, bytes32 cid, uint timeout, string _datasource, string _arg1, string _arg2, uint feelimit, uint256 timestamp, uint8 _chainId);
+        event logN(address sender, bytes32 cid, uint timeout, string _datasource, bytes args, uint feelimit, uint256 timestamp, uint8 _chainId);
         
         event updatePrice(uint256 price, uint256 timestamp);
         event Emit_OffchainPaymentFlag(address indexed idx_sender, address sender, bool indexed idx_flag, bool flag);
@@ -24,6 +24,8 @@
 
         address private BRGaddr;
 
+        uint8 public chainId;
+
         function getReqc(address _client) public view returns (uint256 _count){
             require(msg.sender == cbAddress());
             return reqc[_client];
@@ -31,6 +33,10 @@
 
         function setBRGaddr(address _newAddress) public onlyAdmin {
             BRGaddr = _newAddress;
+        }
+
+        function setChainId(uint8 _chainId) public onlyAdmin {
+            chainId = _chainId;
         }
 
         modifier onlyPriceBot {
@@ -250,7 +256,7 @@
             costs(_datasource, _feeLimit);
             _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
             reqc[msg.sender]++;
-            emit Log1(msg.sender, _id, _timestamp, _datasource, _arg, _feeLimit, now, 2);
+            emit Log1(msg.sender, _id, _timestamp, _datasource, _arg, _feeLimit, now, chainId);
             return _id;
         }
     
@@ -258,7 +264,7 @@
             costs(_datasource, _feeLimit);
             _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
             reqc[msg.sender]++;
-            emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _feeLimit, now, 2);
+            emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _feeLimit, now, chainId);
             return _id;
         }
     
@@ -266,7 +272,7 @@
             costs(_datasource, _feelimit);
             _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
             reqc[msg.sender]++;
-            emit logN(msg.sender, _id, _timestamp, _datasource, _args, _feelimit, now, 2);
+            emit logN(msg.sender, _id, _timestamp, _datasource, _args, _feelimit, now, chainId);
             return _id;
         }
     }
