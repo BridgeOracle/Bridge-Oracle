@@ -1,6 +1,6 @@
 pragma solidity ^0.5.9;
 
-interface ITRC20 {
+interface IBEP20 {
     function balanceOf(address account) external view returns (uint256);
     function approve(address spender, uint256 amount) external returns (bool);
     function allowance(address owner, address spender) external view returns (uint256);
@@ -9,13 +9,13 @@ interface ITRC20 {
 contract oracleI {
     address public cbAddress;
     function query(uint _timestamp, string calldata _datasource, string calldata _arg) external payable returns(bytes32 _id);
-    function query_withFeeLimit(uint _timestamp, string calldata _datasource, string calldata _arg, uint _feeLimit) external payable returns(bytes32 _id);
+    function query_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg, uint _gasLimit) external payable returns(bytes32 _id);
     function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) public payable returns(bytes32 _id);
-    function query2_withFeeLimit(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2, uint _feeLimit) external payable returns(bytes32 _id);
+    function query2_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2, uint _gasLimit) external payable returns(bytes32 _id);
     function queryN(uint _timestamp, string memory _datasource, bytes memory _argN) public payable returns(bytes32 _id);
-    function queryN_withFeeLimit(uint _timestamp, string calldata _datasource, bytes calldata _argN, uint _gasLimit) external payable returns(bytes32 _id);
-    function getPrice(string memory _datasource) public returns(uint256 TRXbasedPrice, uint256 discountPrice);
-    function getPrice(string memory _datasource, uint _feeLimit) public returns(uint256 TRXbasedPrice, uint256 discountPrice);
+    function queryN_withGasLimit(uint _timestamp, string calldata _datasource, bytes calldata _argN, uint _gasLimit) external payable returns(bytes32 _id);
+    function getPrice(string memory _datasource) public returns(uint256 BNBbasedPrice, uint256 discountPrice);
+    function getPrice(string memory _datasource, uint _gasLimit) public returns(uint256 BNBbasedPrice, uint256 discountPrice);
     function getTokenStatus() external view returns(bool _status);
     function getRelativeDecimal() external returns(uint256 _dec);
     function getTokenPrice() public returns(uint256 _price);
@@ -272,125 +272,125 @@ contract BridgePublicAPI {
         _;
     }
 
-    function payment1(uint256 timeout, string memory _datasource, string memory _arg, uint256 _feelimit) internal returns(bytes32 _id) {
+    function payment1(uint256 timeout, string memory _datasource, string memory _arg, uint256 _gaslimit) internal returns(bytes32 _id) {
         uint256 tokenPrice = oracle.getTokenPrice();
         address tokenAddress = OAR.getTokenAddress();
-        if(_feelimit > 0) {
-            (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource, _feelimit);
+        if(_gaslimit > 0) {
+            (uint256 BNBbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource, _gaslimit);
             uint256 tokenBasedPrice = (discountPrice * tokenPrice)/10 ** oracle.getRelativeDecimal();
-            if (TRXbasedPrice > 1000 trx) {
+            if (BNBbasedPrice > 1 ether) {
                 return 0; // Unexpectedly high price
             }
-            if(oracle.getTokenStatus() && ITRC20(tokenAddress).balanceOf(address(this)) >= tokenBasedPrice){
-                if (ITRC20(tokenAddress).allowance(address(this), address(oracle)) >= tokenBasedPrice) {
-                    return oracle.query_withFeeLimit.value(0)(timeout, _datasource, _arg, _feelimit);
+            if(oracle.getTokenStatus() && IBEP20(tokenAddress).balanceOf(address(this)) >= tokenBasedPrice){
+                if (IBEP20(tokenAddress).allowance(address(this), address(oracle)) >= tokenBasedPrice) {
+                    return oracle.query_withGasLimit.value(0)(timeout, _datasource, _arg, _gaslimit);
                 } else {
-                    require(ITRC20(tokenAddress).approve(OAR.getAddress("public"), uint(-1)));
-                    return oracle.query_withFeeLimit.value(0)(timeout, _datasource, _arg, _feelimit);
+                    require(IBEP20(tokenAddress).approve(OAR.getAddress("public"), uint(-1)));
+                    return oracle.query_withGasLimit.value(0)(timeout, _datasource, _arg, _gaslimit);
                 }
             }
             else {
-                return oracle.query_withFeeLimit.value(TRXbasedPrice)(timeout,_datasource, _arg, _feelimit);
+                return oracle.query_withGasLimit.value(BNBbasedPrice)(timeout,_datasource, _arg, _gaslimit);
             }
 
         }else {
-            (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource);
+            (uint256 BNBbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource);
             uint256 tokenBasedPrice = (discountPrice * tokenPrice)/10 ** oracle.getRelativeDecimal();
-            if (TRXbasedPrice > 1000 trx) {
+            if (BNBbasedPrice > 1 ether) {
                 return 0; // Unexpectedly high price
             }
-            if(oracle.getTokenStatus() && ITRC20(tokenAddress).balanceOf(address(this)) >= tokenBasedPrice){
-                if (ITRC20(tokenAddress).allowance(address(this), address(oracle)) >= tokenBasedPrice) {
+            if(oracle.getTokenStatus() && IBEP20(tokenAddress).balanceOf(address(this)) >= tokenBasedPrice){
+                if (IBEP20(tokenAddress).allowance(address(this), address(oracle)) >= tokenBasedPrice) {
                     return oracle.query.value(0)(timeout, _datasource, _arg);
                 } else {
-                    require(ITRC20(tokenAddress).approve(OAR.getAddress("public"), uint(-1)));
+                    require(IBEP20(tokenAddress).approve(OAR.getAddress("public"), uint(-1)));
                     return oracle.query.value(0)(timeout, _datasource, _arg);
                 }
             }
             else {
-                return oracle.query.value(TRXbasedPrice)(timeout,_datasource, _arg);
+                return oracle.query.value(BNBbasedPrice)(timeout,_datasource, _arg);
             }
         }
     }
 
-     function payment2(uint256 timeout, string memory _datasource, string memory _arg1, string memory _arg2, uint256 _feelimit) internal returns(bytes32 _id) {
+     function payment2(uint256 timeout, string memory _datasource, string memory _arg1, string memory _arg2, uint256 _gaslimit) internal returns(bytes32 _id) {
         uint256 tokenPrice = oracle.getTokenPrice();
         address tokenAddress = OAR.getTokenAddress();
-        if(_feelimit > 0) {
-            (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource, _feelimit);
+        if(_gaslimit > 0) {
+            (uint256 BNBbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource, _gaslimit);
             uint256 tokenBasedPrice = (discountPrice * tokenPrice)/10 ** oracle.getRelativeDecimal();
-            if (TRXbasedPrice > 1000 trx) {
+            if (BNBbasedPrice > 1 ether) {
                 return 0; // Unexpectedly high price
             }
-            if(oracle.getTokenStatus() && ITRC20(tokenAddress).balanceOf(address(this)) >= tokenBasedPrice){
-                if (ITRC20(tokenAddress).allowance(address(this), address(oracle)) >= tokenBasedPrice) {
-                    return oracle.query2_withFeeLimit.value(0)(timeout, _datasource, _arg1, _arg2, _feelimit);
+            if(oracle.getTokenStatus() && IBEP20(tokenAddress).balanceOf(address(this)) >= tokenBasedPrice){
+                if (IBEP20(tokenAddress).allowance(address(this), address(oracle)) >= tokenBasedPrice) {
+                    return oracle.query2_withGasLimit.value(0)(timeout, _datasource, _arg1, _arg2, _gaslimit);
                 } else {
-                    require(ITRC20(tokenAddress).approve(OAR.getAddress("public"), uint(-1)));
-                    return oracle.query2_withFeeLimit.value(0)(timeout, _datasource, _arg1, _arg2, _feelimit);
+                    require(IBEP20(tokenAddress).approve(OAR.getAddress("public"), uint(-1)));
+                    return oracle.query2_withGasLimit.value(0)(timeout, _datasource, _arg1, _arg2, _gaslimit);
                 }
             }
             else {
-                return oracle.query2_withFeeLimit.value(TRXbasedPrice)(timeout,_datasource, _arg1, _arg2, _feelimit);
+                return oracle.query2_withGasLimit.value(BNBbasedPrice)(timeout,_datasource, _arg1, _arg2, _gaslimit);
             }
 
         }else {
-            (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource);
+            (uint256 BNBbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource);
             uint256 tokenBasedPrice = (discountPrice * tokenPrice)/10 ** oracle.getRelativeDecimal();
-            if (TRXbasedPrice > 1000 trx) {
+            if (BNBbasedPrice > 1 ether) {
                 return 0; // Unexpectedly high price
             }
-            if(oracle.getTokenStatus() && ITRC20(tokenAddress).balanceOf(address(this)) >= tokenBasedPrice){
-                if (ITRC20(tokenAddress).allowance(address(this), address(oracle)) >= tokenBasedPrice) {
+            if(oracle.getTokenStatus() && IBEP20(tokenAddress).balanceOf(address(this)) >= tokenBasedPrice){
+                if (IBEP20(tokenAddress).allowance(address(this), address(oracle)) >= tokenBasedPrice) {
                     return oracle.query2.value(0)(timeout, _datasource, _arg1, _arg2);
                 } else {
-                    require(ITRC20(tokenAddress).approve(OAR.getAddress("public"), uint(-1)));
+                    require(IBEP20(tokenAddress).approve(OAR.getAddress("public"), uint(-1)));
                     return oracle.query2.value(0)(timeout, _datasource, _arg1, _arg2);
                 }
             }
             else {
-                return oracle.query2.value(TRXbasedPrice)(timeout,_datasource, _arg1, _arg2);
+                return oracle.query2.value(BNBbasedPrice)(timeout,_datasource, _arg1, _arg2);
             }
         }
     }
 
-    function paymentN(uint256 timeout, string memory _datasource, bytes memory _args, uint256 _feelimit) internal returns(bytes32 _id) {
+    function paymentN(uint256 timeout, string memory _datasource, bytes memory _args, uint256 _gaslimit) internal returns(bytes32 _id) {
         uint256 tokenPrice = oracle.getTokenPrice();
         address tokenAddress = OAR.getTokenAddress();
-        if(_feelimit > 0) {
-            (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource, _feelimit);
+        if(_gaslimit > 0) {
+            (uint256 BNBbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource, _gaslimit);
             uint256 tokenBasedPrice = (discountPrice * tokenPrice)/10 ** oracle.getRelativeDecimal();
-            if (TRXbasedPrice > 1000 trx) {
+            if (BNBbasedPrice > 1 ether) {
                 return 0; // Unexpectedly high price
             }
-            if(oracle.getTokenStatus() && ITRC20(tokenAddress).balanceOf(address(this)) >= tokenBasedPrice){
-                if (ITRC20(tokenAddress).allowance(address(this), address(oracle)) >= tokenBasedPrice) {
-                    return oracle.queryN_withFeeLimit.value(0)(timeout, _datasource, _args, _feelimit);
+            if(oracle.getTokenStatus() && IBEP20(tokenAddress).balanceOf(address(this)) >= tokenBasedPrice){
+                if (IBEP20(tokenAddress).allowance(address(this), address(oracle)) >= tokenBasedPrice) {
+                    return oracle.queryN_withGasLimit.value(0)(timeout, _datasource, _args, _gaslimit);
                 } else {
-                    require(ITRC20(tokenAddress).approve(OAR.getAddress("public"), uint(-1)));
-                    return oracle.queryN_withFeeLimit.value(0)(timeout, _datasource, _args, _feelimit);
+                    require(IBEP20(tokenAddress).approve(OAR.getAddress("public"), uint(-1)));
+                    return oracle.queryN_withGasLimit.value(0)(timeout, _datasource, _args, _gaslimit);
                 }
             }
             else {
-                return oracle.queryN_withFeeLimit.value(TRXbasedPrice)(timeout,_datasource, _args, _feelimit);
+                return oracle.queryN_withGasLimit.value(BNBbasedPrice)(timeout,_datasource, _args, _gaslimit);
             }
 
         }else {
-            (uint256 TRXbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource);
+            (uint256 BNBbasedPrice, uint256 discountPrice) = oracle.getPrice(_datasource);
             uint256 tokenBasedPrice = (discountPrice * tokenPrice)/10 ** oracle.getRelativeDecimal();
-            if (TRXbasedPrice > 1000 trx) {
+            if (BNBbasedPrice > 1 ether) {
                 return 0; // Unexpectedly high price
             }
-            if(oracle.getTokenStatus() && ITRC20(tokenAddress).balanceOf(address(this)) >= tokenBasedPrice){
-                if (ITRC20(tokenAddress).allowance(address(this), address(oracle)) >= tokenBasedPrice) {
+            if(oracle.getTokenStatus() && IBEP20(tokenAddress).balanceOf(address(this)) >= tokenBasedPrice){
+                if (IBEP20(tokenAddress).allowance(address(this), address(oracle)) >= tokenBasedPrice) {
                     return oracle.queryN.value(0)(timeout, _datasource, _args);
                 } else {
-                    require(ITRC20(tokenAddress).approve(OAR.getAddress("public"), uint(-1)));
-                    return oracle.queryN.value(TRXbasedPrice)(timeout,_datasource, _args);
+                    require(IBEP20(tokenAddress).approve(OAR.getAddress("public"), uint(-1)));
+                    return oracle.queryN.value(BNBbasedPrice)(timeout,_datasource, _args);
                 }
             }
             else {
-                return oracle.queryN.value(TRXbasedPrice)(timeout,_datasource, _args);
+                return oracle.queryN.value(BNBbasedPrice)(timeout,_datasource, _args);
             }
         }
     }
@@ -403,12 +403,12 @@ contract BridgePublicAPI {
         return payment1(_timestamp, _datasource, _arg, 0);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, string memory _arg, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
-        return payment1(_timestamp, _datasource, _arg, _feeLimit);
+    function bridge_query(uint _timestamp, string memory _datasource, string memory _arg, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
+        return payment1(_timestamp, _datasource, _arg, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, string memory _arg, uint _feeLimit) internal oracleAPI returns (bytes32 _id) {
-        return payment1(0, _datasource, _arg, _feeLimit);
+    function bridge_query(string memory _datasource, string memory _arg, uint _gasLimit) internal oracleAPI returns (bytes32 _id) {
+        return payment1(0, _datasource, _arg, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, string memory _arg1, string memory _arg2) internal oracleAPI returns(bytes32 _id) {
@@ -419,12 +419,12 @@ contract BridgePublicAPI {
         return payment2(_timestamp, _datasource, _arg1, _arg2, 0);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
-        return payment2(_timestamp, _datasource, _arg1, _arg2, _feeLimit);
+    function bridge_query(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
+        return payment2(_timestamp, _datasource, _arg1, _arg2, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, string memory _arg1, string memory _arg2, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
-       return payment2(0, _datasource, _arg1, _arg2, _feeLimit);
+    function bridge_query(string memory _datasource, string memory _arg1, string memory _arg2, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
+       return payment2(0, _datasource, _arg1, _arg2, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, string[] memory _argN) internal oracleAPI returns(bytes32 _id) {
@@ -437,14 +437,14 @@ contract BridgePublicAPI {
         return paymentN(_timestamp, _datasource, args, 0);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, string[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[] memory _argN, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes memory args = stra2cbor(_argN);
-        return paymentN(_timestamp, _datasource, args, _feeLimit);
+        return paymentN(_timestamp, _datasource, args, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, string[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[] memory _argN, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes memory args = stra2cbor(_argN);
-        return paymentN(0, _datasource, args, _feeLimit);
+        return paymentN(0, _datasource, args, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, bytes[] memory _argN) internal oracleAPI returns(bytes32 _id) {
@@ -457,14 +457,14 @@ contract BridgePublicAPI {
         return paymentN(_timestamp, _datasource, args, 0);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, bytes[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[] memory _argN, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes memory args = ba2cbor(_argN);
-        return paymentN(_timestamp, _datasource, args, _feeLimit);
+        return paymentN(_timestamp, _datasource, args, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, bytes[] memory _argN, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[] memory _argN, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes memory args = ba2cbor(_argN);
-        return paymentN(0, _datasource, args, _feeLimit);
+        return paymentN(0, _datasource, args, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, string[1] memory _args) internal oracleAPI returns(bytes32 _id) {
@@ -479,16 +479,16 @@ contract BridgePublicAPI {
         return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, string[1] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[1] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](1);
         dynargs[0] = _args[0];
-        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, string[1] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[1] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](1);
         dynargs[0] = _args[0];
-        return bridge_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, string[2] memory _args) internal oracleAPI returns(bytes32 _id) {
@@ -505,18 +505,18 @@ contract BridgePublicAPI {
         return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, string[2] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[2] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
-        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, string[2] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[2] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
-        return bridge_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, string[3] memory _args) internal oracleAPI returns(bytes32 _id) {
@@ -535,20 +535,20 @@ contract BridgePublicAPI {
         return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, string[3] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[3] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](3);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
-        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, string[3] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[3] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](3);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
-        return bridge_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, string[4] memory _args) internal oracleAPI returns(bytes32 _id) {
@@ -569,22 +569,22 @@ contract BridgePublicAPI {
         return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, string[4] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[4] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](4);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
-        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, string[4] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[4] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](4);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
-        return bridge_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, string[5] memory _args) internal oracleAPI returns(bytes32 _id) {
@@ -607,24 +607,24 @@ contract BridgePublicAPI {
         return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, string[5] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, string[5] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](5);
         dynargs[0] = _args[0];
         dynargs[2] = _args[2];
         dynargs[1] = _args[1];
         dynargs[3] = _args[3];
         dynargs[4] = _args[4];
-        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, string[5] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, string[5] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         string[] memory dynargs = new string[](5);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
         dynargs[4] = _args[4];
-        return bridge_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, bytes[1] memory _args) internal oracleAPI returns(bytes32 _id) {
@@ -639,16 +639,16 @@ contract BridgePublicAPI {
         return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, bytes[1] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[1] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](1);
         dynargs[0] = _args[0];
-        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, bytes[1] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[1] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](1);
         dynargs[0] = _args[0];
-        return bridge_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, bytes[2] memory _args) internal oracleAPI returns(bytes32 _id) {
@@ -665,18 +665,18 @@ contract BridgePublicAPI {
         return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, bytes[2] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[2] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
-        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, bytes[2] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[2] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](2);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
-        return bridge_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, bytes[3] memory _args) internal oracleAPI returns(bytes32 _id) {
@@ -695,20 +695,20 @@ contract BridgePublicAPI {
         return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, bytes[3] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[3] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](3);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
-        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, bytes[3] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[3] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](3);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
-        return bridge_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, bytes[4] memory _args) internal oracleAPI returns(bytes32 _id) {
@@ -729,22 +729,22 @@ contract BridgePublicAPI {
         return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, bytes[4] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[4] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](4);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
-        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, bytes[4] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[4] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](4);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
-        return bridge_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _gasLimit);
     }
 
     function bridge_query(string memory _datasource, bytes[5] memory _args) internal oracleAPI returns(bytes32 _id) {
@@ -767,32 +767,32 @@ contract BridgePublicAPI {
         return bridge_query(_timestamp, _datasource, dynargs);
     }
 
-    function bridge_query(uint _timestamp, string memory _datasource, bytes[5] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(uint _timestamp, string memory _datasource, bytes[5] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](5);
         dynargs[0] = _args[0];
         dynargs[2] = _args[2];
         dynargs[1] = _args[1];
         dynargs[3] = _args[3];
         dynargs[4] = _args[4];
-        return bridge_query(_timestamp, _datasource, dynargs, _feeLimit);
+        return bridge_query(_timestamp, _datasource, dynargs, _gasLimit);
     }
 
-    function bridge_query(string memory _datasource, bytes[5] memory _args, uint _feeLimit) internal oracleAPI returns(bytes32 _id) {
+    function bridge_query(string memory _datasource, bytes[5] memory _args, uint _gasLimit) internal oracleAPI returns(bytes32 _id) {
         bytes[] memory dynargs = new bytes[](5);
         dynargs[0] = _args[0];
         dynargs[1] = _args[1];
         dynargs[2] = _args[2];
         dynargs[3] = _args[3];
         dynargs[4] = _args[4];
-        return bridge_query(_datasource, dynargs, _feeLimit);
+        return bridge_query(_datasource, dynargs, _gasLimit);
     }
 
-    function oracle_getPrice(string memory _datasource) internal oracleAPI returns(uint256 TRXbasedPrice, uint256 discountPrice) {
+    function oracle_getPrice(string memory _datasource) internal oracleAPI returns(uint256 BNBbasedPrice, uint256 discountPrice) {
         return oracle.getPrice(_datasource);
     }
 
-    function oracle_getPrice(string memory _datasource, uint _feeLimit) internal oracleAPI returns(uint256 TRXbasedPrice, uint256 discountPrice) {
-        return oracle.getPrice(_datasource, _feeLimit);
+    function oracle_getPrice(string memory _datasource, uint _gasLimit) internal oracleAPI returns(uint256 BNBbasedPrice, uint256 discountPrice) {
+        return oracle.getPrice(_datasource, _gasLimit);
     }
 
     function oracle_setNetwork(uint8 _networkID) internal returns (bool _networkSet) {
@@ -807,15 +807,11 @@ contract BridgePublicAPI {
     function oracle_setNetwork() internal returns (bool _networkSet) {
         if (getCodeSize(0x6457FBbf3ae193aBaC9b47B0809Ff1aF5236CD88) > 0) {
             OAR = OracleAddrResolverI(0x6457FBbf3ae193aBaC9b47B0809Ff1aF5236CD88);
-            oracle_setNetworkName("trx_mainnet");
+            oracle_setNetworkName("bnb_mainnet");
             return true;
         }else if (getCodeSize(0x292e33d054903Bf949b779A7A11ab799006cc7AC) > 0) {
             OAR = OracleAddrResolverI(0x292e33d054903Bf949b779A7A11ab799006cc7AC);
-            oracle_setNetworkName("trx_shasta");
-            return true;
-        }else if (getCodeSize(0x25069835b2E21df48552899a5cC61c840d6D0C1F) > 0) {
-            OAR = OracleAddrResolverI(0x25069835b2E21df48552899a5cC61c840d6D0C1F);
-            oracle_setNetworkName("trx_nile");
+            oracle_setNetworkName("bnb_testnet");
             return true;
         }
         return false;
@@ -828,7 +824,7 @@ contract BridgePublicAPI {
     }
 
     function __callback(bytes32 _myid, string memory _result) public {
-            
+        
     }
 
     function oracle_cbAddress() internal oracleAPI returns(address _callbackAddress) {
