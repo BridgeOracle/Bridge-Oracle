@@ -1,6 +1,6 @@
 pragma solidity ^0.5.9;
     
-interface ITRC20 {
+interface IBEP20 {
     function balanceOf(address who) external returns (uint);
     function transferFrom(address from, address to, uint256 value) external returns (bool);
     function transfer(address to, uint256 value) external returns(bool);
@@ -8,9 +8,9 @@ interface ITRC20 {
 
 contract BridgeOracle {
         
-    event Log1(address sender, bytes32 cid, uint timeout, string _datasource, string _arg, uint feelimit, uint256 timestamp);
-    event Log2(address sender, bytes32 cid, uint timeout, string _datasource, string _arg1, string _arg2, uint feelimit, uint256 timestamp);
-    event logN(address sender, bytes32 cid, uint timeout, string _datasource, bytes args, uint feelimit, uint256 timestamp);
+    event Log1(address sender, bytes32 cid, uint timeout, string _datasource, string _arg, uint gaslimit, uint256 timestamp);
+    event Log2(address sender, bytes32 cid, uint timeout, string _datasource, string _arg1, string _arg2, uint gaslimit, uint256 timestamp);
+    event logN(address sender, bytes32 cid, uint timeout, string _datasource, bytes args, uint gaslimit, uint256 timestamp);
         
     event updatePrice(uint256 price, uint256 timestamp);
     event Emit_OffchainPaymentFlag(address indexed idx_sender, address sender, bool indexed idx_flag, bool flag);
@@ -73,7 +73,7 @@ contract BridgeOracle {
     mapping(address => byte) public cbAddresses;
     uint public basePrice;
     uint256 public maxBandWidthPrice; 
-    uint256 public defaultFeeLimit;
+    uint256 public defaultGasLimit;
     bytes32[] dsources;
     address private owner;
     mapping (bytes32 => uint) price_multiplier;
@@ -105,8 +105,8 @@ contract BridgeOracle {
         maxBandWidthPrice = new_maxBandWidthPrice;
     }
 
-    function setDefaultFeeLimit(uint256 new_defaultFeeLimit) external onlyAdmin {
-        defaultFeeLimit = new_defaultFeeLimit;
+    function setDefaultGasLimit(uint256 new_defaultGasLimit) external onlyAdmin {
+        defaultGasLimit = new_defaultGasLimit;
     }
         
     function addCbAddress(address newCbAddress, byte addressType) public onlyAdmin {
@@ -147,16 +147,16 @@ contract BridgeOracle {
         for (uint i =0; i< dsources.length; i++) price[dsources[i]] = new_baseprice*price_multiplier[dsources[i]];
     }
         
-    function getPrice(string memory _datasource) public view returns(uint256 TRXbasedPrice, uint256 discountPrice) {
+    function getPrice(string memory _datasource) public view returns(uint256 BNBbasedPrice, uint256 discountPrice) {
         return getPrice(_datasource, msg.sender);
     }
         
-    function getPrice(string memory _datasource, uint _feeLimit) public view returns(uint256 TRXbasedPrice, uint256 discountPrice) {
-        return getPrice(_datasource, _feeLimit, msg.sender);
+    function getPrice(string memory _datasource, uint _gasLimit) public view returns(uint256 BNBbasedPrice, uint256 discountPrice) {
+        return getPrice(_datasource, _gasLimit, msg.sender);
     }
         
-    function getPrice(string memory _datasource, address _addr) private view returns(uint256 TRXbasedPrice, uint256 discountPrice) {
-        return getPrice(_datasource, defaultFeeLimit, _addr);
+    function getPrice(string memory _datasource, address _addr) private view returns(uint256 BNBbasedPrice, uint256 discountPrice) {
+        return getPrice(_datasource, defaultGasLimit, _addr);
     }
         
     mapping (bytes32 => uint) price;
@@ -170,33 +170,33 @@ contract BridgeOracle {
         discount = _amount;
     } 
         
-    function getPrice(string memory _datasource, uint _feeLimit, address _addr) private view returns(uint TRXbasedPrice, uint discountPrice) {
+    function getPrice(string memory _datasource, uint _gasLimit, address _addr) private view returns(uint BNBbasedPrice, uint discountPrice) {
         if(offchainPayment[_addr] || reqc[_addr] == 0) {
             return (0, 0);
         }
-        require(_feeLimit <= defaultFeeLimit);
+        require(_gasLimit <= defaultGasLimit);
         uint256 _dsprice = price[sha256(abi.encodePacked(_datasource))];
-        TRXbasedPrice = _dsprice + maxBandWidthPrice + _feeLimit;
-        discountPrice = (_dsprice - ((_dsprice * discount) / 100)) + maxBandWidthPrice + _feeLimit;
-        return (TRXbasedPrice, discountPrice);
+        BNBbasedPrice = _dsprice + maxBandWidthPrice + _gasLimit;
+        discountPrice = (_dsprice - ((_dsprice * discount) / 100)) + maxBandWidthPrice + _gasLimit;
+        return (BNBbasedPrice, discountPrice);
     }
     
-    function costs(string memory datasource, uint feelimit) private {
-        (uint256 _TRXbasedPrice, uint256 _discountPrice) = getPrice(datasource, feelimit);
+    function costs(string memory datasource, uint gaslimit) private {
+        (uint256 _BNBbasedPrice, uint256 _discountPrice) = getPrice(datasource, gaslimit);
         address _owner = msg.sender;
 
         uint256 _tokenPrice = getTokenPrice();
         uint256 _tokenBasedPrice = (_discountPrice * _tokenPrice)/10 ** Rdec;
     
-        if(_TRXbasedPrice == 0) {
+        if(_BNBbasedPrice == 0) {
             return;
         } 
-        else if(usingToken && ITRC20(BRGaddr).balanceOf(_owner) >= _tokenBasedPrice) {
-                require(ITRC20(BRGaddr).transferFrom(_owner, address(this), _tokenBasedPrice));
+        else if(usingToken && IBEP20(BRGaddr).balanceOf(_owner) >= _tokenBasedPrice) {
+                require(IBEP20(BRGaddr).transferFrom(_owner, address(this), _tokenBasedPrice));
         }
         else {
-            if (msg.value >= _TRXbasedPrice) {
-                uint diff  = msg.value - _TRXbasedPrice;
+            if (msg.value >= _BNBbasedPrice) {
+                uint diff  = msg.value - _BNBbasedPrice;
                 if (diff > 0) {
                     require(msg.sender.send(diff));
                 }
@@ -213,59 +213,59 @@ contract BridgeOracle {
         _addr.transfer(address(this).balance);
     }
 
-    function transferAnyTRC20(address _tokenAddress, address _to, uint256 _amount) public onlyAdmin {
-        ITRC20(_tokenAddress).transfer(_to, _amount);
+    function transferAnyBEP20(address _tokenAddress, address _to, uint256 _amount) public onlyAdmin {
+        IBEP20(_tokenAddress).transfer(_to, _amount);
     }
     
     function query(string calldata _datasource, string calldata _arg) external payable returns(bytes32 _id) {
-        return query1(0, _datasource, _arg, defaultFeeLimit);
+        return query1(0, _datasource, _arg, defaultGasLimit);
     }
         
     function query(uint _timestamp, string calldata _datasource, string calldata _arg) payable external returns(bytes32 _id) {
-        return query1(_timestamp, _datasource, _arg, defaultFeeLimit);
+        return query1(_timestamp, _datasource, _arg, defaultGasLimit);
     }
     
-    function query_withFeeLimit(uint _timestamp, string calldata _datasource, string calldata _arg, uint _feelimit) external payable returns(bytes32 _id) {
-        return query1(_timestamp, _datasource, _arg, _feelimit);
+    function query_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg, uint _gaslimit) external payable returns(bytes32 _id) {
+        return query1(_timestamp, _datasource, _arg, _gaslimit);
     }
     
     function query2(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2) external payable returns(bytes32 _id) {
-        return query2(_timestamp, _datasource, _arg1, _arg2, defaultFeeLimit);
+        return query2(_timestamp, _datasource, _arg1, _arg2, defaultGasLimit);
     }
     
-    function query2_withFeeLimit(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2, uint _feeLimit) external payable returns(bytes32 _id) {
-        return query2(_timestamp, _datasource, _arg1, _arg2, _feeLimit);
+    function query2_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg1, string calldata _arg2, uint _gasLimit) external payable returns(bytes32 _id) {
+        return query2(_timestamp, _datasource, _arg1, _arg2, _gasLimit);
     }
     
     function queryN(string calldata _datasource, bytes calldata _args) external payable returns(bytes32 _id) {
-        return queryN(0, _datasource, _args, defaultFeeLimit);
+        return queryN(0, _datasource, _args, defaultGasLimit);
     }
     
     function queryN(uint _timestamp, string calldata _datasource, bytes calldata _args) external payable returns(bytes32 _id) {
-        return queryN(_timestamp, _datasource, _args, defaultFeeLimit);
+        return queryN(_timestamp, _datasource, _args, defaultGasLimit);
     }
     
-    function query1(uint _timestamp, string memory _datasource, string memory _arg, uint _feeLimit) public payable returns(bytes32 _id) {
-        costs(_datasource, _feeLimit);
+    function query1(uint _timestamp, string memory _datasource, string memory _arg, uint _gasLimit) public payable returns(bytes32 _id) {
+        costs(_datasource, _gasLimit);
         _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
         reqc[msg.sender]++;
-        emit Log1(msg.sender, _id, _timestamp, _datasource, _arg, _feeLimit, now);
+        emit Log1(msg.sender, _id, _timestamp, _datasource, _arg, _gasLimit, now);
         return _id;
     }
     
-    function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _feeLimit) public payable returns(bytes32 _id) {
-        costs(_datasource, _feeLimit);
+    function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2, uint _gasLimit) public payable returns(bytes32 _id) {
+        costs(_datasource, _gasLimit);
         _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
         reqc[msg.sender]++;
-        emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _feeLimit, now);
+        emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _gasLimit, now);
         return _id;
     }
     
-    function queryN(uint _timestamp, string memory _datasource, bytes memory _args, uint _feelimit) public payable returns(bytes32 _id) {
-        costs(_datasource, _feelimit);
+    function queryN(uint _timestamp, string memory _datasource, bytes memory _args, uint _gaslimit) public payable returns(bytes32 _id) {
+        costs(_datasource, _gaslimit);
         _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
         reqc[msg.sender]++;
-        emit logN(msg.sender, _id, _timestamp, _datasource, _args, _feelimit, now);
+        emit logN(msg.sender, _id, _timestamp, _datasource, _args, _gaslimit, now);
         return _id;
         }
 }   
