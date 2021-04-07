@@ -71,8 +71,7 @@ contract BridgeOracle {
         
     mapping(address => uint) internal reqc;
     mapping(address => byte) public cbAddresses;
-    uint public basePrice;
-    uint256 public maxBandWidthPrice; 
+    uint public basePrice; 
     uint256 public defaultGasLimit;
     bytes32[] dsources;
     address private owner;
@@ -99,10 +98,6 @@ contract BridgeOracle {
     modifier onlyAdmin() {
         require(msg.sender == owner);
         _;
-    }
-    
-    function setMaxBandWidthPrice(uint256 new_maxBandWidthPrice) external onlyAdmin {
-        maxBandWidthPrice = new_maxBandWidthPrice;
     }
 
     function setDefaultGasLimit(uint256 new_defaultGasLimit) external onlyAdmin {
@@ -176,8 +171,8 @@ contract BridgeOracle {
         }
         require(_gasLimit <= defaultGasLimit);
         uint256 _dsprice = price[sha256(abi.encodePacked(_datasource))];
-        BNBbasedPrice = _dsprice + maxBandWidthPrice + _gasLimit;
-        discountPrice = (_dsprice - ((_dsprice * discount) / 100)) + maxBandWidthPrice + _gasLimit;
+        BNBbasedPrice = _dsprice + _gasLimit;
+        discountPrice = (_dsprice - ((_dsprice * discount) / 100)) + _gasLimit;
         return (BNBbasedPrice, discountPrice);
     }
     
