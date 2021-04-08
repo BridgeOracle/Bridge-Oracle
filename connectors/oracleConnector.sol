@@ -178,7 +178,7 @@ contract BridgeOracle {
         
     function getPrice(string memory _datasource, uint _gasLimit, address _addr) private view returns(uint BNBbasedPrice, uint discountPrice) {
         uint gasprice_ = addr_gasPrice[_addr];
-        if(offchainPayment[_addr] || (reqc[_addr] == 0) && (_gaslimit <= 200000) && (gasprice_ <= gasprice) && (tx.origin != cbAddress())) {
+        if(offchainPayment[_addr] || (reqc[_addr] == 0) && (_gasLimit <= 200000) && (gasprice_ <= gasprice) && (tx.origin != cbAddress())) {
             return (0, 0);
         }
         if (gasprice_ == 0) gasprice_ = gasprice;
@@ -198,8 +198,8 @@ contract BridgeOracle {
         if(_BNBbasedPrice == 0) {
             return;
         } 
-        else if(usingToken && IBEP20(BRGaddr).balanceOf(_owner) >= _tokenBasedPrice) {
-                require(IBEP20(BRGaddr).transferFrom(_owner, address(this), _tokenBasedPrice));
+        else if(usingToken && IBEP20(BRGaddr).balanceOf(client) >= _tokenBasedPrice) {
+                require(IBEP20(BRGaddr).transferFrom(client, address(this), _tokenBasedPrice));
         }
         else {
             if (msg.value >= _BNBbasedPrice) {
