@@ -8,9 +8,9 @@ interface IBEP20 {
 
 contract BridgeOracle {
         
-    event Log1(address sender, bytes32 cid, uint timeout, string _datasource, string _arg, uint gaslimit, uint256 timestamp);
-    event Log2(address sender, bytes32 cid, uint timeout, string _datasource, string _arg1, string _arg2, uint gaslimit, uint256 timestamp);
-    event logN(address sender, bytes32 cid, uint timeout, string _datasource, bytes args, uint gaslimit, uint256 timestamp);
+    event Log1(address sender, bytes32 cid, uint timeout, string _datasource, string _arg, uint gaslimit, uint256 timestamp, uint gasPrice);
+    event Log2(address sender, bytes32 cid, uint timeout, string _datasource, string _arg1, string _arg2, uint gaslimit, uint256 timestamp, uint gasPrice);
+    event logN(address sender, bytes32 cid, uint timeout, string _datasource, bytes args, uint gaslimit, uint256 timestamp, uint gasPrice);
         
     event updatePrice(uint256 price, uint256 timestamp);
     event Emit_OffchainPaymentFlag(address indexed idx_sender, address sender, bool indexed idx_flag, bool flag);
@@ -72,8 +72,8 @@ contract BridgeOracle {
         
     mapping(address => uint) internal reqc;
     mapping(address => byte) public cbAddresses;
-    uint public basePrice; 
-    uint256 public defaultGasLimit;
+    uint public basePrice = 500000000000000;
+    uint256 public defaultGasLimit = 200000;
     bytes32[] dsources;
     address private owner;
     mapping (bytes32 => uint) price_multiplier;
@@ -177,18 +177,20 @@ contract BridgeOracle {
     } 
         
     function getPrice(string memory _datasource, uint _gasLimit, address _addr) private view returns(uint BNBbasedPrice, uint discountPrice) {
-        if(offchainPayment[_addr] || reqc[_addr] == 0) {
+        uint gasprice_ = addr_gasPrice[_addr];
+        if(offchainPayment[_addr] || (reqc[_addr] == 0) && (_gaslimit <= 200000) && (gasprice_ <= gasprice) && (tx.origin != cbAddress())) {
             return (0, 0);
         }
+        if (gasprice_ == 0) gasprice_ = gasprice;
         uint256 _dsprice = price[sha256(abi.encodePacked(_datasource))];
-        BNBbasedPrice = _dsprice + _gasLimit;
-        discountPrice = (_dsprice - ((_dsprice * discount) / 100)) + _gasLimit;
+        BNBbasedPrice = _dsprice + (_gasLimit * gasprice_);
+        discountPrice = (_dsprice - ((_dsprice * discount) / 100)) + (_gasLimit * gasprice_);
         return (BNBbasedPrice, discountPrice);
     }
     
     function costs(string memory datasource, uint gaslimit) private {
         (uint256 _BNBbasedPrice, uint256 _discountPrice) = getPrice(datasource, gaslimit);
-        address _owner = msg.sender;
+        address client = msg.sender;
 
         uint256 _tokenPrice = getTokenPrice();
         uint256 _tokenBasedPrice = (_discountPrice * _tokenPrice)/10 ** Rdec;
@@ -254,7 +256,7 @@ contract BridgeOracle {
         costs(_datasource, _gasLimit);
         _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
         reqc[msg.sender]++;
-        emit Log1(msg.sender, _id, _timestamp, _datasource, _arg, _gasLimit, now);
+        emit Log1(msg.sender, _id, _timestamp, _datasource, _arg, _gasLimit, now, addr_gasPrice[msg.sender]);
         return _id;
     }
     
@@ -262,7 +264,7 @@ contract BridgeOracle {
         costs(_datasource, _gasLimit);
         _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
         reqc[msg.sender]++;
-        emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _gasLimit, now);
+        emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _gasLimit, now, addr_gasPrice[msg.sender]);
         return _id;
     }
     
@@ -270,7 +272,7 @@ contract BridgeOracle {
         costs(_datasource, _gaslimit);
         _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
         reqc[msg.sender]++;
-        emit logN(msg.sender, _id, _timestamp, _datasource, _args, _gaslimit, now);
+        emit logN(msg.sender, _id, _timestamp, _datasource, _args, _gaslimit, now, addr_gasPrice[msg.sender]);
         return _id;
         }
 }   
