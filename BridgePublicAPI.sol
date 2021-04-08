@@ -8,6 +8,7 @@ interface IBEP20 {
 
 contract oracleI {
     address public cbAddress;
+    function setCustomGasPrice(uint _gasPrice) external;
     function query(uint _timestamp, string calldata _datasource, string calldata _arg) external payable returns(bytes32 _id);
     function query_withGasLimit(uint _timestamp, string calldata _datasource, string calldata _arg, uint _gasLimit) external payable returns(bytes32 _id);
     function query2(uint _timestamp, string memory _datasource, string memory _arg1, string memory _arg2) public payable returns(bytes32 _id);
