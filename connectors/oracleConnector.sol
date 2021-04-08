@@ -137,6 +137,8 @@ contract BridgeOracle {
         if(cbAddresses[tx.origin] != 0)
             _cbAddress = tx.origin;
     }
+
+    uint gasprice = 20000000000;
     
     function setBasePrice(uint new_baseprice) external onlyAdmin {
         basePrice = new_baseprice;
