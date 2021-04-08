@@ -142,6 +142,10 @@ contract BridgeOracle {
         basePrice = new_baseprice;
         for (uint i =0; i< dsources.length; i++) price[dsources[i]] = new_baseprice*price_multiplier[dsources[i]];
     }
+    
+    function setCustomGasPrice(uint _gasPrice) external {
+        addr_gasPrice[msg.sender] = _gasPrice;
+    }
         
     function getPrice(string memory _datasource) public view returns(uint256 BNBbasedPrice, uint256 discountPrice) {
         return getPrice(_datasource, msg.sender);
