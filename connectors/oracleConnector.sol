@@ -139,6 +139,10 @@ contract BridgeOracle {
     }
 
     uint gasprice = 20000000000;
+
+    function setGasPrice(uint newgasprice) external onlyAdmin {
+        gasprice = newgasprice;
+    }
     
     function setBasePrice(uint new_baseprice) external onlyAdmin {
         basePrice = new_baseprice;

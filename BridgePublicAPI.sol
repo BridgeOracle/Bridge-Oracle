@@ -818,8 +818,8 @@ contract BridgePublicAPI {
         return false;
     }
 
-    function oraclize_setCustomGasPrice(uint _gasPrice) oraclizeAPI internal {
-        return oraclize.setCustomGasPrice(_gasPrice);
+    function bridge_setCustomGasPrice(uint _gasPrice) oracleAPI internal {
+        return oracle.setCustomGasPrice(_gasPrice);
     }
 
     function getCodeSize(address _addr) view internal returns(uint _size) {
