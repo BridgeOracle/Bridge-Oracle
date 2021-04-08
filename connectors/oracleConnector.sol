@@ -180,7 +180,6 @@ contract BridgeOracle {
         if(offchainPayment[_addr] || reqc[_addr] == 0) {
             return (0, 0);
         }
-        require(_gasLimit <= defaultGasLimit);
         uint256 _dsprice = price[sha256(abi.encodePacked(_datasource))];
         BNBbasedPrice = _dsprice + _gasLimit;
         discountPrice = (_dsprice - ((_dsprice * discount) / 100)) + _gasLimit;
