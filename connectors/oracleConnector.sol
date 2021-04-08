@@ -17,6 +17,7 @@ contract BridgeOracle {
         
     address internal paymentFlagger;
     mapping (address => bool) public offchainPayment;
+    mapping (address => uint) addr_gasPrice;
 
     bool public usingToken;
 
