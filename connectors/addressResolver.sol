@@ -1,15 +1,15 @@
-pragma solidity ^0.5.9;
+pragma solidity 0.5.9;
 
 contract OracleAddrResolver {
 
     address public tokenAddress;
 
     mapping(bytes32 => address) public oracleType;
-    
+
     address owner;
 
     string[] public oracles;
-    
+
     constructor() public {
         owner = msg.sender;
     }
@@ -18,35 +18,35 @@ contract OracleAddrResolver {
         require(msg.sender == owner);
         _;
     }
-    
-    function changeOwner(address newowner) onlyOwner public{
+
+    function changeOwner(address newowner) public onlyOwner {
         owner = newowner;
     }
-    
-    function getAddress(string memory _oracleType) public returns (address oaddr){
-        bytes32 __oracleType = sha256(abi.encodePacked(_oracleType));
-        return oracleType[__oracleType];
+
+    function getAddress(string memory _oracleType) public view returns (address oaddr){
+        bytes32 oracleType = sha256(abi.encodePacked(_oracleType));
+        return oracleType[oracleType];
     }
 
-    function setTokenAddress(address _tokenAddress) public onlyOwner{
+    function setTokenAddress(address _tokenAddress) public onlyOwner {
         tokenAddress = _tokenAddress;
     }
-    
+
     function getTokenAddress() public view returns(address _tokenAddress) {
         return tokenAddress;
     }
-    
-    function addOracleType(string memory oracleName, address oracleAddress) onlyOwner public {
-        bytes32 __oracleType = sha256(abi.encodePacked(oracleName));
-        require(oracleType[__oracleType] == address(0));
+
+    function addOracleType(string memory oracleName, address oracleAddress) public onlyOwner {
+        bytes32 oracleType = sha256(abi.encodePacked(oracleName));
+        require(oracleType[oracleType] == address(0));
         oracles.push(oracleName);
-        oracleType[__oracleType] = oracleAddress;
+        oracleType[oracleType] = oracleAddress;
     }
 
-    function removeOracleType(string memory oracleName) onlyOwner public {
-        bytes32 __oracleType = sha256(abi.encodePacked(oracleName));
-        require(oracleType[__oracleType] != address(0));
-        delete oracleType[__oracleType];
+    function removeOracleType(string memory oracleName) public onlyOwner {
+        bytes32 oracleType = sha256(abi.encodePacked(oracleName));
+        require(oracleType[oracleType] != address(0));
+        delete oracleType[oracleType];
         uint len = oracles.length;
         for(uint i = 0; i < len; i++){
             if(sha256(abi.encodePacked(oracles[i])) == __oracleType) {
@@ -61,5 +61,5 @@ contract OracleAddrResolver {
     function oracleArrayLen() public view returns (uint256 arrayLen) {
         return oracles.length;
     }
-    
+
 }
