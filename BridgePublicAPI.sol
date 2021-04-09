@@ -806,13 +806,13 @@ contract BridgePublicAPI {
     }
 
     function oracle_setNetwork() internal returns (bool _networkSet) {
-        if (getCodeSize(0x6457FBbf3ae193aBaC9b47B0809Ff1aF5236CD88) > 0) {
-            OAR = OracleAddrResolverI(0x6457FBbf3ae193aBaC9b47B0809Ff1aF5236CD88);
-            oracle_setNetworkName("bnb_mainnet");
+        if (getCodeSize(0xe32D149796028608640c99e14d70593C1432A5c9) > 0) {
+            OAR = OracleAddrResolverI(0xe32D149796028608640c99e14d70593C1432A5c9);
+            oracle_setNetworkName("bsc_mainnet");
             return true;
-        }else if (getCodeSize(0x292e33d054903Bf949b779A7A11ab799006cc7AC) > 0) {
-            OAR = OracleAddrResolverI(0x292e33d054903Bf949b779A7A11ab799006cc7AC);
-            oracle_setNetworkName("bnb_testnet");
+        }else if (getCodeSize(0x83d70e974459d6A26E8f86b1C272E78f8C65A630) > 0) {
+            OAR = OracleAddrResolverI(0x83d70e974459d6A26E8f86b1C272E78f8C65A630);
+            oracle_setNetworkName("bsc_testnet");
             return true;
         }
         return false;
