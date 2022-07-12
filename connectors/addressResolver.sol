@@ -1,4 +1,5 @@
-pragma solidity 0.5.9;
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.5.6;
 
 contract OracleAddrResolver {
 
@@ -50,9 +51,9 @@ contract OracleAddrResolver {
         uint len = oracles.length;
         for(uint i = 0; i < len; i++){
             if(sha256(abi.encodePacked(oracles[i])) == __oracleType) {
-                oracles[i] = oracles[oracles.length - 1];
-                delete oracles[oracles.length - 1];
-                oracles.length--;
+                oracles[i] = oracles[len - 1];
+                delete oracles[len - 1];
+                len--;
                 break;
             }
         }

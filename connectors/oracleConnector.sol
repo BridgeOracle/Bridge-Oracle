@@ -1,4 +1,4 @@
-pragma solidity ^0.5.9;
+pragma solidity >=0.5.8;
     
 interface IBEP20 {
     function balanceOf(address who) external returns (uint);
@@ -67,11 +67,11 @@ contract BridgeOracle {
 
     function setTokenPrice(uint256 _price) public onlyPriceBot {
         tokenPrice = _price;
-        emit updatePrice(_price, now);
+        emit updatePrice(_price, block.timestamp);
     }
         
     mapping(address => uint) internal reqc;
-    mapping(address => byte) public cbAddresses;
+    mapping(address => bytes1) public cbAddresses;
     uint public basePrice = 500000000000000;
     uint256 public defaultGasLimit = 200000;
     bytes32[] dsources;
@@ -105,7 +105,7 @@ contract BridgeOracle {
         defaultGasLimit = new_defaultGasLimit;
     }
         
-    function addCbAddress(address newCbAddress, byte addressType) public onlyAdmin {
+    function addCbAddress(address newCbAddress, bytes1 addressType) public onlyAdmin {
         cbAddresses[newCbAddress] = addressType;
     }
     
@@ -125,9 +125,9 @@ contract BridgeOracle {
         uint len = dsources.length;
         for(uint i = 0; i < len; i++){
             if(dsources[i] == dsname_hash) {
-                dsources[i] = dsources[dsources.length - 1];
-                delete dsources[dsources.length - 1];
-                dsources.length--;
+                dsources[i] = dsources[len - 1];
+                delete dsources[len - 1];
+                len--;
                 break;
             }
         }
@@ -256,7 +256,7 @@ contract BridgeOracle {
         costs(_datasource, _gasLimit);
         _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
         reqc[msg.sender]++;
-        emit Log1(msg.sender, _id, _timestamp, _datasource, _arg, _gasLimit, now, addr_gasPrice[msg.sender]);
+        emit Log1(msg.sender, _id, _timestamp, _datasource, _arg, _gasLimit, block.timestamp, addr_gasPrice[msg.sender]);
         return _id;
     }
     
@@ -264,7 +264,7 @@ contract BridgeOracle {
         costs(_datasource, _gasLimit);
         _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
         reqc[msg.sender]++;
-        emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _gasLimit, now, addr_gasPrice[msg.sender]);
+        emit Log2(msg.sender, _id, _timestamp, _datasource, _arg1, _arg2, _gasLimit, block.timestamp, addr_gasPrice[msg.sender]);
         return _id;
     }
     
@@ -272,7 +272,7 @@ contract BridgeOracle {
         costs(_datasource, _gaslimit);
         _id = sha256(abi.encodePacked(this, msg.sender, reqc[msg.sender]));
         reqc[msg.sender]++;
-        emit logN(msg.sender, _id, _timestamp, _datasource, _args, _gaslimit, now, addr_gasPrice[msg.sender]);
+        emit logN(msg.sender, _id, _timestamp, _datasource, _args, _gaslimit, block.timestamp, addr_gasPrice[msg.sender]);
         return _id;
-        }
+    }
 }   

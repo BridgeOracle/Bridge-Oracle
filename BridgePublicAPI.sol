@@ -1,4 +1,4 @@
-pragma solidity ^0.5.9;
+pragma solidity >=0.5.6;
 
 interface IBEP20 {
     function balanceOf(address account) external view returns (uint256);
@@ -806,12 +806,12 @@ contract BridgePublicAPI {
     }
 
     function oracle_setNetwork() internal returns (bool _networkSet) {
-        if (getCodeSize(0xFb72ADc55EeeDA17D875219d45E59002da75332e) > 0) {
-            OAR = OracleAddrResolverI(0xFb72ADc55EeeDA17D875219d45E59002da75332e);
+        if (getCodeSize(0xD59d061b8Ca6dB42EDec9Fe7A720c126b5bc0Fc4) > 0) {
+            OAR = OracleAddrResolverI(0xD59d061b8Ca6dB42EDec9Fe7A720c126b5bc0Fc4);
             oracle_setNetworkName("bsc_mainnet");
             return true;
-        }else if (getCodeSize(0x83d70e974459d6A26E8f86b1C272E78f8C65A630) > 0) {
-            OAR = OracleAddrResolverI(0x83d70e974459d6A26E8f86b1C272E78f8C65A630);
+        }else if (getCodeSize(0x3c3D64D207aEcadD03846772829beaAF6c5074ba) > 0) {
+            OAR = OracleAddrResolverI(0x3c3D64D207aEcadD03846772829beaAF6c5074ba);
             oracle_setNetworkName("bsc_testnet");
             return true;
         }
